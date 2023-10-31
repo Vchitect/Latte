@@ -17,7 +17,7 @@ latent diffusion models with transformers (LAVITA). You can find more visualizat
 
 This repository contains:
 
-* 🪐 A simple PyTorch [implementation](models/lavita.py.py) of LAVITA
+* 🪐 A simple PyTorch [implementation](models/lavita.py) of LAVITA
 * ⚡️ Pre-trained LAVITA models trained on FaceForensics, SkyTimelapse, Taichi-HD and UCF101 (256x256)
 
 * 🛸 A LAVITA [training script](train.py) using PyTorch DDP
