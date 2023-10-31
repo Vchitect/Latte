@@ -1,0 +1,21 @@
+name: lavita
+channels:
+  - pytorch
+  - nvidia
+dependencies:
+  - python > 3.8 
+  - pytorch > 1.13.1
+  - torchvision
+  - pytorch-cuda=11.7
+  - pip:
+    - timm
+    - diffusers[torch]==0.11.1
+    - accelerate
+    - python-hostlist
+    - tensorboard
+    - einops
+    - transformers
+    - av
+    - scikit-image
+    - decord
+    - pandas

@@ -1,0 +1,42 @@
+# dataset
+dataset: "ffs"
+
+data_path: "/path/to/datasets/preprocess_ffs/train/videos/" # s
+pretrained_model_path: "/path/to/pretrained/LAVITA/"
+
+# save and load
+results_dir: "./results"
+pretrained:
+
+# model config: 
+model: LAVITA-XL/2
+num_frames: 16
+image_size: 256 # choices=[256, 512]
+num_sampling_steps: 250
+frame_interval: 3
+fixed_spatial: False
+attention_bias: True
+learn_sigma: True # important
+extras: 1 # [1, 2, 78]
+
+# train config:
+save_ceph: True # important
+learning_rate: 1e-4
+ckpt_every: 10000
+clip_max_norm: 0.1
+start_clip_iter: 20000
+local_batch_size: 5 # important
+max_train_steps: 1000000
+global_seed: 3407
+num_workers: 8
+log_every: 100
+lr_warmup_steps: 0
+resume_from_checkpoint:
+gradient_accumulation_steps: 1 # TODO
+num_classes:
+
+# low VRAM and speed up training
+use_compile: False
+mixed_precision: False
+enable_xformers_memory_efficient_attention: False
+gradient_checkpointing: False

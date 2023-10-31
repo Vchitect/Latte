@@ -1,0 +1,33 @@
+# path:
+ckpt:
+save_img_path: "./sample_videos/"
+pretrained_model_path: "/path/to/pretrained/LAVITA/"
+
+# model config: 
+model: LAVITA-XL/2
+num_frames: 16
+image_size: 256 # choices=[256, 512]
+frame_interval: 3
+fixed_spatial: False
+attention_bias: True
+learn_sigma: True
+extras: 2 # [1, 2, 78]
+num_classes: 101
+
+# model speedup
+use_compile: False
+use_fp16: True
+
+# sample config:
+seed:
+sample_method: 'ddpm'
+num_sampling_steps: 250
+cfg_scale: 7.0
+run_time: 12
+num_sample: 1
+sample_names: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+negative_name: 101
+
+# ddp sample config
+per_proc_batch_size: 2
+num_fvd_samples: 2

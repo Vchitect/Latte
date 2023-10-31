@@ -1,0 +1,30 @@
+# path:
+ckpt: # will be overwrite
+save_img_path: "./sample_videos/" # will be overwrite
+pretrained_model_path: "/path/to/pretrained/LAVITA/"
+
+# model config: 
+model: LAVITA-XL/2
+num_frames: 16
+image_size: 256 # choices=[256, 512]
+frame_interval: 2
+fixed_spatial: False
+attention_bias: True
+learn_sigma: True
+extras: 1 # [1, 2, 78]
+num_classes:
+
+# model speedup
+use_compile: False
+use_fp16: True
+
+# sample config:
+seed:
+sample_method: 'ddpm'
+num_sampling_steps: 250
+cfg_scale: 1.0
+negative_name:
+
+# ddp sample config
+per_proc_batch_size: 1
+num_fvd_samples: 2
