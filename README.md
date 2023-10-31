@@ -1,4 +1,4 @@
-## LAVITA: Latent Video Diffusion Models with Spatio-temporal Transformers (LAVITA)<br><sub>Official PyTorch Implementation</sub>
+## LAVITA: Latent Video Diffusion Models with Spatio-temporal Transformers<br><sub>Official PyTorch Implementation</sub>
 
 ### [Paper](https://maxin-cn.github.io/lavita_project/) | [Project Page](https://maxin-cn.github.io/lavita_project/)
 
