@@ -14,13 +14,8 @@ try:
     from diffusion import create_diffusion
     from download import find_model
 except:
-    # sys.path.append(os.getcwd())
     sys.path.append(os.path.split(sys.path[0])[0])
-    # 代码解释
-    # sys.path[0]                   : 得到C:\Users\maxu\Desktop\blog_test\pakage2
-    # os.path.split(sys.path[0])    : 得到['C:\Users\maxu\Desktop\blog_test',pakage2']
-    # mmcls 里面跨包引用是因为安装了mmcls
-    
+
     import utils
 
     from diffusion import create_diffusion
