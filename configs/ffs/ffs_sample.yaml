@@ -1,10 +1,10 @@
 # path:
 ckpt: # will be overwrite
 save_img_path: "./sample_videos" # will be overwrite
-pretrained_model_path: "/path/to/pretrained/LAVITA/"
+pretrained_model_path: "/path/to/pretrained/Latte/"
 
 # model config: 
-model: LAVITA-XL/2
+model: Latte-XL/2
 num_frames: 16
 image_size: 256 # choices=[256, 512]
 frame_interval: 2

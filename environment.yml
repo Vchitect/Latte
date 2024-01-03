@@ -1,4 +1,4 @@
-name: lavita
+name: latte
 channels:
   - pytorch
   - nvidia

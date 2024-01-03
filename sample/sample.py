@@ -4,7 +4,7 @@
 # LICENSE file in the root directory of this source tree.
 
 """
-Sample new images from a pre-trained LAVITA.
+Sample new images from a pre-trained Latte.
 """
 import os
 import sys
@@ -44,7 +44,7 @@ def main(args):
     # device = "cpu"
 
     if args.ckpt is None:
-        assert args.model == "LAVITA-XL/2", "Only LAVITA-XL/2 models are available for auto-download."
+        assert args.model == "Latte-XL/2", "Only Latte-XL/2 models are available for auto-download."
         assert args.image_size in [256, 512]
         assert args.num_classes == 1000
 
@@ -58,7 +58,7 @@ def main(args):
     if args.use_compile:
         model = torch.compile(model)
 
-    # a pre-trained model or load a custom LAVITA checkpoint from train.py:
+    # a pre-trained model or load a custom Latte checkpoint from train.py:
     ckpt_path = args.ckpt
     state_dict = find_model(ckpt_path)
     model.load_state_dict(state_dict)

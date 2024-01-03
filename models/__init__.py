@@ -2,8 +2,8 @@ import os
 import sys
 sys.path.append(os.path.split(sys.path[0])[0])
 
-from .lavita import LAVITA_models
-from .lavita_img import LAVITAIMG_models
+from .latte import Latte_models
+from .latte_img import LatteIMG_models
 
 from torch.optim.lr_scheduler import LambdaLR
 
@@ -28,16 +28,16 @@ def get_lr_scheduler(optimizer, name, **kwargs):
         raise NotImplementedError(name)
     
 def get_models(args):
-    if 'LAVITAIMG' in args.model:
-        return LAVITAIMG_models[args.model](
+    if 'LatteIMG' in args.model:
+        return LatteIMG_models[args.model](
                 input_size=args.latent_size,
                 num_classes=args.num_classes,
                 num_frames=args.num_frames,
                 learn_sigma=args.learn_sigma,
                 extras=args.extras
             )
-    elif 'LAVITA' in args.model:
-        return LAVITA_models[args.model](
+    elif 'Latte' in args.model:
+        return Latte_models[args.model](
                 input_size=args.latent_size,
                 num_classes=args.num_classes,
                 num_frames=args.num_frames,

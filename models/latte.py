@@ -154,12 +154,12 @@ class LabelEmbedder(nn.Module):
 
 
 #################################################################################
-#                                 Core LAVITA Model                                #
+#                                 Core Latte Model                                #
 #################################################################################
 
 class TransformerBlock(nn.Module):
     """
-    A LAVITA tansformer block with adaptive layer norm zero (adaLN-Zero) conditioning.
+    A Latte tansformer block with adaptive layer norm zero (adaLN-Zero) conditioning.
     """
     def __init__(self, hidden_size, num_heads, mlp_ratio=4.0, **block_kwargs):
         super().__init__()
@@ -183,7 +183,7 @@ class TransformerBlock(nn.Module):
 
 class FinalLayer(nn.Module):
     """
-    The final layer of LAVITA.
+    The final layer of Latte.
     """
     def __init__(self, hidden_size, patch_size, out_channels):
         super().__init__()
@@ -201,7 +201,7 @@ class FinalLayer(nn.Module):
         return x
 
 
-class LAVITA(nn.Module):
+class Latte(nn.Module):
     """
     Diffusion model with a Transformer backbone.
     """
@@ -283,7 +283,7 @@ class LAVITA(nn.Module):
         nn.init.normal_(self.t_embedder.mlp[0].weight, std=0.02)
         nn.init.normal_(self.t_embedder.mlp[2].weight, std=0.02)
 
-        # Zero-out adaLN modulation layers in LAVITA blocks:
+        # Zero-out adaLN modulation layers in Latte blocks:
         for block in self.blocks:
             nn.init.constant_(block.adaLN_modulation[-1].weight, 0)
             nn.init.constant_(block.adaLN_modulation[-1].bias, 0)
@@ -318,7 +318,7 @@ class LAVITA(nn.Module):
                 text_embedding=None, 
                 use_fp16=False):
         """
-        Forward pass of LAVITA.
+        Forward pass of Latte.
         x: (N, F, C, H, W) tensor of video inputs
         t: (N,) tensor of diffusion timesteps
         y: (N,) tensor of class labels
@@ -378,7 +378,7 @@ class LAVITA(nn.Module):
 
     def forward_with_cfg(self, x, t, y=None, cfg_scale=7.0, use_fp16=False, text_embedding=None):
         """
-        Forward pass of LAVITA, but also batches the unconditional forward pass for classifier-free guidance.
+        Forward pass of Latte, but also batches the unconditional forward pass for classifier-free guidance.
         """
         # https://github.com/openai/glide-text2im/blob/main/notebooks/text2im.ipynb
         half = x[: len(x) // 2]
@@ -458,51 +458,51 @@ def get_1d_sincos_pos_embed_from_grid(embed_dim, pos):
 
 
 #################################################################################
-#                                   LAVITA Configs                                  #
+#                                   Latte Configs                                  #
 #################################################################################
 
-def LAVITA_XL_2(**kwargs):
-    return LAVITA(depth=28, hidden_size=1152, patch_size=2, num_heads=16, **kwargs)
+def Latte_XL_2(**kwargs):
+    return Latte(depth=28, hidden_size=1152, patch_size=2, num_heads=16, **kwargs)
 
-def LAVITA_XL_4(**kwargs):
-    return LAVITA(depth=28, hidden_size=1152, patch_size=4, num_heads=16, **kwargs)
+def Latte_XL_4(**kwargs):
+    return Latte(depth=28, hidden_size=1152, patch_size=4, num_heads=16, **kwargs)
 
-def LAVITA_XL_8(**kwargs):
-    return LAVITA(depth=28, hidden_size=1152, patch_size=8, num_heads=16, **kwargs)
+def Latte_XL_8(**kwargs):
+    return Latte(depth=28, hidden_size=1152, patch_size=8, num_heads=16, **kwargs)
 
-def LAVITA_L_2(**kwargs):
-    return LAVITA(depth=24, hidden_size=1024, patch_size=2, num_heads=16, **kwargs)
+def Latte_L_2(**kwargs):
+    return Latte(depth=24, hidden_size=1024, patch_size=2, num_heads=16, **kwargs)
 
-def LAVITA_L_4(**kwargs):
-    return LAVITA(depth=24, hidden_size=1024, patch_size=4, num_heads=16, **kwargs)
+def Latte_L_4(**kwargs):
+    return Latte(depth=24, hidden_size=1024, patch_size=4, num_heads=16, **kwargs)
 
-def LAVITA_L_8(**kwargs):
-    return LAVITA(depth=24, hidden_size=1024, patch_size=8, num_heads=16, **kwargs)
+def Latte_L_8(**kwargs):
+    return Latte(depth=24, hidden_size=1024, patch_size=8, num_heads=16, **kwargs)
 
-def LAVITA_B_2(**kwargs):
-    return LAVITA(depth=12, hidden_size=768, patch_size=2, num_heads=12, **kwargs)
+def Latte_B_2(**kwargs):
+    return Latte(depth=12, hidden_size=768, patch_size=2, num_heads=12, **kwargs)
 
-def LAVITA_B_4(**kwargs):
-    return LAVITA(depth=12, hidden_size=768, patch_size=4, num_heads=12, **kwargs)
+def Latte_B_4(**kwargs):
+    return Latte(depth=12, hidden_size=768, patch_size=4, num_heads=12, **kwargs)
 
-def LAVITA_B_8(**kwargs):
-    return LAVITA(depth=12, hidden_size=768, patch_size=8, num_heads=12, **kwargs)
+def Latte_B_8(**kwargs):
+    return Latte(depth=12, hidden_size=768, patch_size=8, num_heads=12, **kwargs)
 
-def LAVITA_S_2(**kwargs):
-    return LAVITA(depth=12, hidden_size=384, patch_size=2, num_heads=6, **kwargs)
+def Latte_S_2(**kwargs):
+    return Latte(depth=12, hidden_size=384, patch_size=2, num_heads=6, **kwargs)
 
-def LAVITA_S_4(**kwargs):
-    return LAVITA(depth=12, hidden_size=384, patch_size=4, num_heads=6, **kwargs)
+def Latte_S_4(**kwargs):
+    return Latte(depth=12, hidden_size=384, patch_size=4, num_heads=6, **kwargs)
 
-def LAVITA_S_8(**kwargs):
-    return LAVITA(depth=12, hidden_size=384, patch_size=8, num_heads=6, **kwargs)
+def Latte_S_8(**kwargs):
+    return Latte(depth=12, hidden_size=384, patch_size=8, num_heads=6, **kwargs)
 
 
-LAVITA_models = {
-    'LAVITA-XL/2': LAVITA_XL_2,  'LAVITA-XL/4': LAVITA_XL_4,  'LAVITA-XL/8': LAVITA_XL_8,
-    'LAVITA-L/2':  LAVITA_L_2,   'LAVITA-L/4':  LAVITA_L_4,   'LAVITA-L/8':  LAVITA_L_8,
-    'LAVITA-B/2':  LAVITA_B_2,   'LAVITA-B/4':  LAVITA_B_4,   'LAVITA-B/8':  LAVITA_B_8,
-    'LAVITA-S/2':  LAVITA_S_2,   'LAVITA-S/4':  LAVITA_S_4,   'LAVITA-S/8':  LAVITA_S_8,
+Latte_models = {
+    'Latte-XL/2': Latte_XL_2,  'Latte-XL/4': Latte_XL_4,  'Latte-XL/8': Latte_XL_8,
+    'Latte-L/2':  Latte_L_2,   'Latte-L/4':  Latte_L_4,   'Latte-L/8':  Latte_L_8,
+    'Latte-B/2':  Latte_B_2,   'Latte-B/4':  Latte_B_4,   'Latte-B/8':  Latte_B_8,
+    'Latte-S/2':  Latte_S_2,   'Latte-S/4':  Latte_S_4,   'Latte-S/8':  Latte_S_8,
 }
 
 if __name__ == '__main__':
@@ -514,7 +514,7 @@ if __name__ == '__main__':
     img = torch.randn(3, 16, 4, 32, 32).to(device)
     t = torch.tensor([1, 2, 3]).to(device)
     y = torch.tensor([1, 2, 3]).to(device)
-    network = LAVITA_XL_2().to(device)
+    network = Latte_XL_2().to(device)
     from thop import profile 
     flops, params = profile(network, inputs=(img, t))
     print('FLOPs = ' + str(flops/1000**3) + 'G')

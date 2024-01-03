@@ -4,7 +4,7 @@
 # LICENSE file in the root directory of this source tree.
 
 """
-A minimal training script for LAVITA using PyTorch DDP.
+A minimal training script for Latte using PyTorch DDP.
 """
 
 
@@ -67,7 +67,7 @@ def main(args):
     if rank == 0:
         os.makedirs(args.results_dir, exist_ok=True)  # Make results folder (holds all experiment subfolders)
         experiment_index = len(glob(f"{args.results_dir}/*"))
-        model_string_name = args.model.replace("/", "-")  # e.g., LAVITA-XL/2 --> LAVITA-XL-2 (for naming folders)
+        model_string_name = args.model.replace("/", "-")  # e.g., Latte-XL/2 --> Latte-XL-2 (for naming folders)
         num_frame_string = 'F' + str(args.num_frames) + 'S' + str(args.frame_interval)
         experiment_dir = f"{args.results_dir}/{experiment_index:03d}-{model_string_name}-{num_frame_string}-{args.dataset}"  # Create an experiment folder
         experiment_dir = get_experiment_dir(experiment_dir, args)
@@ -86,7 +86,7 @@ def main(args):
     sample_size = args.image_size // 8
     args.latent_size = sample_size
     model = get_models(args)
-    # Note that parameter initialization is done within the LAVITA constructor
+    # Note that parameter initialization is done within the Latte constructor
     ema = deepcopy(model).to(device)  # Create an EMA of the model for use after training
     requires_grad(ema, False)
     diffusion = create_diffusion(timestep_respacing="")  # default: 1000 steps, linear noise schedule
@@ -261,7 +261,7 @@ def main(args):
                 log_steps = 0
                 start_time = time()
 
-            # Save LAVITA checkpoint:
+            # Save Latte checkpoint:
             if train_steps % args.ckpt_every == 0 and train_steps > 0:
                 if rank == 0:
                     checkpoint = {
@@ -283,7 +283,7 @@ def main(args):
 
 
 if __name__ == "__main__":
-    # Default args here will train LAVITA with the hyperparameters we used in our paper (except training iters).
+    # Default args here will train Latte with the hyperparameters we used in our paper (except training iters).
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default="./configs/train.yaml")
     args = parser.parse_args()

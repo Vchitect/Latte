@@ -4,7 +4,7 @@
 # LICENSE file in the root directory of this source tree.
 
 """
-Samples a large number of images from a pre-trained LAVITA model using DDP.
+Samples a large number of images from a pre-trained Latte model using DDP.
 Subsequently saves a .npz file that can be used to compute FVD and other
 evaluation metrics via the ADM repo: https://github.com/openai/guided-diffusion/tree/main/evaluations
 
@@ -70,7 +70,7 @@ def main(args):
     # print(f"Starting rank={rank}, seed={seed}, world_size={dist.get_world_size()}.")
 
     if args.ckpt is None:
-        assert args.model == "LAVITA-XL/2", "Only LAVITA-XL/2 models are available for auto-download."
+        assert args.model == "Latte-XL/2", "Only Latte-XL/2 models are available for auto-download."
         assert args.image_size in [256, 512]
         assert args.num_classes == 1000
 
@@ -82,7 +82,7 @@ def main(args):
     if args.use_compile:
         model = torch.compile(model)
 
-    # a pre-trained model or load a custom LAVITA checkpoint from train.py:
+    # a pre-trained model or load a custom Latte checkpoint from train.py:
     ckpt_path = args.ckpt
     state_dict = find_model(ckpt_path)
     model.load_state_dict(state_dict)

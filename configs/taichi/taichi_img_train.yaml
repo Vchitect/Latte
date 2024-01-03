@@ -2,14 +2,14 @@
 dataset: "taichi_img"
 
 data_path: "/path/to/datasets/taichi"
-pretrained_model_path: "/path/to/pretrained/LAVITA/"
+pretrained_model_path: "/path/to/pretrained/Latte/"
 
 # save and load
 results_dir: "./results_img"
 pretrained:
 
 # model config: 
-model: LAVITAIMG-XL/2
+model: LatteIMG-XL/2
 num_frames: 16
 image_size: 256 # choices=[256, 512]
 num_sampling_steps: 250

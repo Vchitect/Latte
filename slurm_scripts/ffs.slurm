@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#SBATCH --job-name=LAVITA-ffs # nom du job
+#SBATCH --job-name=Latte-ffs # nom du job
 #SBATCH --partition group-name
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=8
@@ -11,6 +11,6 @@
 
 source ~/.bashrc
 
-conda activate lavita
+conda activate latte
 
 srun python train.py --config ./configs/ffs/ffs_train.yaml
