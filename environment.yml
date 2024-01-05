@@ -9,7 +9,7 @@ dependencies:
   - pytorch-cuda=11.7
   - pip:
     - timm
-    - diffusers[torch]==0.15.0
+    - diffusers[torch]
     - accelerate
     - tensorboard
     - einops
