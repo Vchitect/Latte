@@ -1,0 +1,35 @@
+# path:
+ckpt: s3://maxin_p/Video-Generation-Transformers/vgt-t2v/results_temp/027-Transformer3DModelV2-F16W5MV3VM5-webvideo10mvimeomovienetpixabaypexelsimdblaion-FixedSpa-Gc/checkpoints/0073000.pt
+save_img_path: "./sample_videos/t2v"
+pretrained_model_path: "/mnt/petrelfs/share_data/maxin/work/pretrained/pixart-alpha/"
+
+# model config: 
+model: LatteT2V
+video_length: 16
+image_size: [512, 512]
+# # beta schedule
+beta_start: 0.0001
+beta_end: 0.02
+beta_schedule: "linear"
+variance_type: "learned_range"
+
+# model speedup
+use_compile: False
+use_fp16: True
+
+# sample config:
+seed:
+run_time: 0
+guidance_scale: 7.5
+sample_method: 'PNDM'
+num_sampling_steps: 50
+enable_temporal_attentions: True
+
+text_prompt: [
+              'Yellow and black tropical fish dart through the sea.',
+              'An epic tornado attacking above aglowing city at night.',
+              'Slow pan upward of blazing oak fire in an indoor fireplace.',
+              'a cat wearing sunglasses and working as a lifeguard at pool.',
+              'Sunset over the sea.',
+              'A dog in astronaut suit and sunglasses floating in space.',
+              ]

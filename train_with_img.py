@@ -297,15 +297,8 @@ def main(args):
                 x = vae.encode(x).latent_dist.sample().mul_(0.18215)
                 x = rearrange(x, '(b f) c h w -> b f c h w', b=b).contiguous()
 
-            if args.extras == 78:
-                image_name = video_data['image_name']
-                pooled_text_embedding_video = text_encoder(text_prompts=video_name, train=True).unsqueeze(1) # B * 1 * 768
-                pooled_text_embedding_image = []
-                for image_caption in image_name:
-                    pooled_text_embedding_image.append(text_encoder(text_prompts=image_caption.split('===!@#$%^&*==='), train=True).unsqueeze(0)) # 1 * use_image_num * 77 * 768
-                pooled_text_embedding_image = torch.cat(pooled_text_embedding_image, dim=0) # B * use_image_num * 768
-                pooled_text_embedding = torch.cat([pooled_text_embedding_video, pooled_text_embedding_image], dim=1)
-                model_kwargs = dict(text_embedding=pooled_text_embedding, use_image_num=args.use_image_num)
+            if args.extras == 78: # text-to-video
+                raise 'T2V training are Not supported at this moment!'
             elif args.extras == 2:
                 if args.dataset == "ucf101_img":
                     model_kwargs = dict(y=video_name, y_image=image_names, use_image_num=args.use_image_num) # tav unet

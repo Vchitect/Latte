@@ -4,6 +4,7 @@ sys.path.append(os.path.split(sys.path[0])[0])
 
 from .latte import Latte_models
 from .latte_img import LatteIMG_models
+from .latte_t2v import LatteT2V
 
 from torch.optim.lr_scheduler import LambdaLR
 
@@ -36,6 +37,9 @@ def get_models(args):
                 learn_sigma=args.learn_sigma,
                 extras=args.extras
             )
+    elif 'LatteT2V' in args.model:
+        pretrained_model_path = args.pretrained_model_path
+        return LatteT2V.from_pretrained_2d(pretrained_model_path, subfolder="transformer")
     elif 'Latte' in args.model:
         return Latte_models[args.model](
                 input_size=args.latent_size,
