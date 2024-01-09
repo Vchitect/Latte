@@ -1,7 +1,7 @@
 # path:
-ckpt: s3://maxin_p/Video-Generation-Transformers/vgt-t2v/results_temp/027-Transformer3DModelV2-F16W5MV3VM5-webvideo10mvimeomovienetpixabaypexelsimdblaion-FixedSpa-Gc/checkpoints/0073000.pt
+ckpt: /path/to/t2v.pth
 save_img_path: "./sample_videos/t2v"
-pretrained_model_path: "/mnt/petrelfs/share_data/maxin/work/pretrained/pixart-alpha/"
+pretrained_model_path: "/path/to/root_text_encoder_and_vae"
 
 # model config: 
 model: LatteT2V
