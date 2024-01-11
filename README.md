@@ -80,7 +80,7 @@ torchrun --nnodes=1 --nproc_per_node=N train.py --config ./configs/ffs/ffs_img_t
 ```
 
 
-## BibTex
+## Citation
 If you find this work useful for your research, please consider citing it.
 ```bibtex
 @article{ma2024latte,
