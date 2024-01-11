@@ -79,16 +79,17 @@ Latte models. For example, if you wan to train Latte model on the FaceForensics 
 torchrun --nnodes=1 --nproc_per_node=N train.py --config ./configs/ffs/ffs_img_train.yaml
 ```
 
-<!-- ## BibTeX
 
+## BibTex
+If you find this work useful for your research, please consider citing it.
 ```bibtex
-@article{Peebles2022DiT,
-  title={Scalable Diffusion Models with Transformers},
-  author={William Peebles and Saining Xie},
-  year={2022},
-  journal={arXiv preprint arXiv:2212.09748},
+@article{ma2024latte,
+  title={Latte: Latent Diffusion Transformer for Video Generation},
+  author={Ma, Xin and Wang, Yaohui and Jia, Gengyun and Chen, Xinyuan and Liu, Ziwei and Li, Yuan-Fang and Chen, Cunjian and Qiao, Yu},
+  journal={arXiv preprint arXiv:2401.03048},
+  year={2024}
 }
-``` -->
+```
 
 
 ## Acknowledgments

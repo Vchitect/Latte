@@ -43,7 +43,7 @@ try:
     from petrel_client.client import Client
 
     conf_path = '~/petreloss.conf'
-    client = Client(conf_path) # 若不指定 conf_path ，则从 '~/petreloss.conf' 读取配置文
+    client = Client(conf_path)
 except:
     pass
 
