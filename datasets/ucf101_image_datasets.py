@@ -13,8 +13,6 @@ from typing import Dict, List, Tuple
 from torchvision import transforms
 import random
 
-from petrel_client.client import Client
-client = Client('~/petreloss.conf', enable_mc=True)
 
 class_labels_map = None
 cls_sample_cnt = None
@@ -204,8 +202,7 @@ class UCF101Images(torch.utils.data.Dataset):
                     image_class_name = video_frame_path.split('_')[1]
                     image_class_index = self.class_to_idx[image_class_name]
                     video_frame_path = os.path.join(self.frame_data_path, video_frame_path)
-                    image = client.get(video_frame_path)
-                    image = Image.open(io.BytesIO(image)).convert('RGB')
+                    image = Image.open(video_frame_path).convert('RGB')
                     image = self.image_tranform(image).unsqueeze(0)
                     images.append(image)
                     image_names.append(str(image_class_index))

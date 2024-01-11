@@ -38,15 +38,6 @@ from utils import (clip_grad_norm_, create_logger, update_ema,
                    write_tensorboard, setup_distributed, fetch_files_by_numbers,
                    get_experiment_dir, separation_content_motion,)
 
-try:
-    # read data from ceph
-    from petrel_client.client import Client
-
-    conf_path = '~/petreloss.conf'
-    client = Client(conf_path)
-except:
-    pass
-
 
 #################################################################################
 #                                  Training Loop                                #
@@ -108,11 +99,7 @@ def main(args):
 
     # # use pretrained model?
     if args.pretrained:
-        if "s3://" in args.pretrained:
-            with io.BytesIO(client.get(args.pretrained)) as buffer:
-                checkpoint = torch.load(buffer, map_location=lambda storage, loc: storage)
-        else:
-            checkpoint = torch.load(args.pretrained, map_location=lambda storage, loc: storage)
+        checkpoint = torch.load(args.pretrained, map_location=lambda storage, loc: storage)
         if "ema" in checkpoint:  # supports checkpoints from train.py
             logger.info('Using ema ckpt!')
             checkpoint = checkpoint["ema"]

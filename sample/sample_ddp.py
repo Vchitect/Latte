@@ -29,10 +29,7 @@ import imageio
 from omegaconf import OmegaConf
 from models import get_models
 from einops import rearrange
-from petrel_client.client import Client
 
-conf_path = '~/petreloss.conf'
-client = Client(conf_path)
 
 def create_npz_from_sample_folder(sample_dir, num=50_000):
     """
@@ -175,14 +172,8 @@ def main(args):
             sample = ((sample * 0.5 + 0.5) * 255).add_(0.5).clamp_(0, 255).to(dtype=torch.uint8).cpu().permute(0, 2, 3, 1).contiguous()
             index = i * dist.get_world_size() + rank + total
             # Image.fromarray(sample).save(f"{sample_folder_dir}/{index:04d}.png")
-            if args.save_ceph:
-                sample_save_path = ('p2:s3://maxin_p/Video-Generation-Transformers/vgt-v1/' + f"{sample_folder_dir}/{index:04d}.mp4").replace('./', '')
-                with io.BytesIO() as buffer:
-                    imageio.mimwrite(buffer, sample, format='mp4', fps=2, quality=9)
-                    client.put(sample_save_path, buffer.getvalue())
-            else:
-                sample_save_path = f"{sample_folder_dir}/{index:04d}.mp4"
-                imageio.mimwrite(sample_save_path, sample, fps=8, quality=9)
+            sample_save_path = f"{sample_folder_dir}/{index:04d}.mp4"
+            imageio.mimwrite(sample_save_path, sample, fps=8, quality=9)
         total += global_batch_size
 
     # Make sure all processes have finished saving their samples before attempting to convert to .npz
