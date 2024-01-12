@@ -93,7 +93,7 @@ If you find this work useful for your research, please consider citing it.
 
 
 ## Acknowledgments
-Video generation models are improving quickly and the development of Latte has been greatly inspired by the following amazing works and teams: [DiT](https://github.com/facebookresearch/DiT) and [U-ViT](https://github.com/baofff/U-ViT).
+Latte has been greatly inspired by the following amazing works and teams: [DiT](https://github.com/facebookresearch/DiT) and [U-ViT](https://github.com/baofff/U-ViT), we thank all the contributors for open-sourcing.
 
 
 ## License
