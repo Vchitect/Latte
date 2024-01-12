@@ -97,4 +97,4 @@ Latte has been greatly inspired by the following amazing works and teams: [DiT](
 
 
 ## License
-The code and model weights are licensed under [CC-BY-NC](license_for_usage.txt).
+The code and model weights are licensed under [LICENSE](license).
