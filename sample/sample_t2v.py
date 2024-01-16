@@ -29,17 +29,8 @@ def main(args):
 
     transformer_model = get_models(args).to(device, dtype=torch.float16)
     state_dict = find_model(args.ckpt)
-    # transformer_model.load_state_dict(state_dict)
+    transformer_model.load_state_dict(state_dict)
 
-    model_dict = transformer_model.state_dict()
-    pretrained_dict = {}
-    for k, v in state_dict.items():
-        if k in model_dict:
-            pretrained_dict[k] = v
-    # 2. overwrite entries in the existing state dict
-    model_dict.update(pretrained_dict)
-    transformer_model.load_state_dict(model_dict)
-    
     vae = AutoencoderKL.from_pretrained(args.pretrained_model_path, subfolder="vae", torch_dtype=torch.float16).to(device)
     tokenizer = T5Tokenizer.from_pretrained(args.pretrained_model_path, subfolder="tokenizer")
     text_encoder = T5EncoderModel.from_pretrained(args.pretrained_model_path, subfolder="text_encoder", torch_dtype=torch.float16).to(device)
@@ -140,7 +131,6 @@ def main(args):
                                 width=args.image_size[1], 
                                 num_inference_steps=args.num_sampling_steps,
                                 guidance_scale=args.guidance_scale,
-                                # guidance_scale=7.0,
                                 enable_temporal_attentions=args.enable_temporal_attentions,
                                 num_images_per_prompt=1,
                                 mask_feature=True,
