@@ -1,7 +1,7 @@
 # path:
 ckpt: /path/to/t2v.pth
 save_img_path: "./sample_videos/t2v"
-pretrained_model_path: "/path/to/root_text_encoder_and_vae"
+pretrained_model_path: "/path/to/t2v_required_models"
 
 # model config: 
 model: LatteT2V
