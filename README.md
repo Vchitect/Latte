@@ -77,7 +77,7 @@ We also provide the video-image joint training scripts [`train_with_img.py`](tra
 Latte models. For example, if you wan to train Latte model on the FaceForensics dataset, you can use:
 
 ```bash
-torchrun --nnodes=1 --nproc_per_node=N train.py --config ./configs/ffs/ffs_img_train.yaml
+torchrun --nnodes=1 --nproc_per_node=N train_with_img.py --config ./configs/ffs/ffs_img_train.yaml
 ```
 
 
