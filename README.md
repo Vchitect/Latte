@@ -18,7 +18,7 @@ We propose a novel Latent Diffusion Transformer, namely Latte, for video generat
 This repository contains:
 
 * 🪐 A simple PyTorch [implementation](models/latte.py) of Latte
-* ⚡️ Pre-trained Latte models trained on FaceForensics, SkyTimelapse, Taichi-HD and UCF101 (256x256)
+* ⚡️ Pre-trained Latte models trained on FaceForensics, SkyTimelapse, Taichi-HD and UCF101 (256x256). In addition, we also provide the T2V checkpoint.
 
 * 🛸 A Latte [training script](train.py) using PyTorch DDP
 
