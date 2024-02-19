@@ -991,20 +991,20 @@ class LatteT2V(ModelMixin, ConfigMixin):
         if not model_file:
             raise RuntimeError(f"{model_file} does not exist")
 
-        if model_file.split(".")[-1] == "safetensors":
-            from safetensors import safe_open
-            state_dict = {}
-            with safe_open(model_file, framework="pt", device="cpu") as f:
-                for key in f.keys():
-                    state_dict[key] = f.get_tensor(key)
-        else:
-            state_dict = torch.load(model_file, map_location="cpu")
+        # if model_file.split(".")[-1] == "safetensors":
+        #     from safetensors import safe_open
+        #     state_dict = {}
+        #     with safe_open(model_file, framework="pt", device="cpu") as f:
+        #         for key in f.keys():
+        #             state_dict[key] = f.get_tensor(key)
+        # else:
+        #     state_dict = torch.load(model_file, map_location="cpu")
         
-        for k, v in model.state_dict().items():
-            if 'temporal_transformer_blocks' in k:
-                state_dict.update({k: v})
+        # for k, v in model.state_dict().items():
+        #     if 'temporal_transformer_blocks' in k:
+        #         state_dict.update({k: v})
 
-        model.load_state_dict(state_dict)
+        # model.load_state_dict(state_dict)
 
         return model
     
