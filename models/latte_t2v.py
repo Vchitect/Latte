@@ -977,19 +977,19 @@ class LatteT2V(ModelMixin, ConfigMixin):
         
         model = cls.from_config(config)
         
-        model_files = [
-            os.path.join(pretrained_model_path, 'diffusion_pytorch_model.bin'),
-            os.path.join(pretrained_model_path, 'diffusion_pytorch_model.safetensors')
-        ]
+        # model_files = [
+        #     os.path.join(pretrained_model_path, 'diffusion_pytorch_model.bin'),
+        #     os.path.join(pretrained_model_path, 'diffusion_pytorch_model.safetensors')
+        # ]
 
-        model_file = None
+        # model_file = None
 
-        for fp in model_files:
-            if os.path.exists(fp):
-                model_file = fp
+        # for fp in model_files:
+        #     if os.path.exists(fp):
+        #         model_file = fp
 
-        if not model_file:
-            raise RuntimeError(f"{model_file} does not exist")
+        # if not model_file:
+        #     raise RuntimeError(f"{model_file} does not exist")
 
         # if model_file.split(".")[-1] == "safetensors":
         #     from safetensors import safe_open
