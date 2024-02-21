@@ -18,9 +18,9 @@ We propose a novel Latent Diffusion Transformer, namely Latte, for video generat
 This repository contains:
 
 * 🪐 A simple PyTorch [implementation](models/latte.py) of Latte
-* ⚡️ Pre-trained Latte models trained on FaceForensics, SkyTimelapse, Taichi-HD and UCF101 (256x256). In addition, we also provide the T2V checkpoint (512x512). All checkpoints can be found in [here](https://huggingface.co/maxin-cn/Latte/tree/main). We are still training our LatteT2V model and will update a better version as soon as possible.
+* ⚡️ Pre-trained Latte models trained on FaceForensics, SkyTimelapse, Taichi-HD and UCF101 (256x256). In addition, we also provide the T2V checkpoint (512x512). All checkpoints can be found in [here](https://huggingface.co/maxin-cn/Latte/tree/main). A updated LatteT2V model is coming soon, stay tuned!
 
-* 🛸 A Latte [training script](train.py) using PyTorch DDP
+* 🛸 A Latte [training script](train.py) using PyTorch DDP.
 
 
 
