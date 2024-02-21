@@ -18,3 +18,4 @@ dependencies:
     - scikit-image
     - decord
     - pandas
+    - imageio-ffmpeg
