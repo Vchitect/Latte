@@ -94,7 +94,7 @@ If you find this work useful for your research, please consider citing it.
 
 
 ## Acknowledgments
-Latte has been greatly inspired by the following amazing works and teams: [DiT](https://github.com/facebookresearch/DiT) and [U-ViT](https://github.com/baofff/U-ViT), we thank all the contributors for open-sourcing.
+Latte has been greatly inspired by the following amazing works and teams: [DiT](https://github.com/facebookresearch/DiT), [U-ViT](https://github.com/baofff/U-ViT) and [PixArt-α](https://github.com/PixArt-alpha/PixArt-alpha), we thank all the contributors for open-sourcing.
 
 
 ## License
