@@ -44,7 +44,7 @@ conda activate latte
 
 ## Sampling 
 
-**Pre-trained Latte checkpoints.** You can sample from our pre-trained Latte models with [`sample.py`](sample/sample.py). Weights for our pre-trained Latte model can be found [here](https://huggingface.co/maxin-cn/Latte). If you want to try generating videos from text, please download [`t2v_required_models`](https://huggingface.co/maxin-cn/Latte/tree/main/t2v_required_models) and run `bash sample/t2v.sh`. The script has various arguments to adjust sampling steps, change the classifier-free guidance scale, etc. For example, to sample from our model on FaceForensics, you can use:
+**Pre-trained Latte checkpoints.** You can sample from our pre-trained Latte models with [`sample.py`](sample/sample.py). Weights for our pre-trained Latte model can be found [here](https://huggingface.co/maxin-cn/Latte).  The script has various arguments to adjust sampling steps, change the classifier-free guidance scale, etc. For example, to sample from our model on FaceForensics, you can use:
 
 ```bash
 bash sample/ffs.sh
@@ -56,6 +56,7 @@ or if you want to sample hundreds of videos, you can use the following script wi
 bash sample/ffs_ddp.sh
 ```
 
+If you want to try generating videos from text, please download [`t2v_required_models`](https://huggingface.co/maxin-cn/Latte/tree/main/t2v_required_models) and run `bash sample/t2v.sh`.
 
 ## Training
 
