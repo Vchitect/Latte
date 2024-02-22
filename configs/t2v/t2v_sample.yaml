@@ -1,5 +1,5 @@
 # path:
-ckpt: /path/to/t2v.pth
+ckpt: /path/to/t2v.pt
 save_img_path: "./sample_videos/t2v"
 pretrained_model_path: "/path/to/t2v_required_models"
 

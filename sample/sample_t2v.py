@@ -135,14 +135,12 @@ def main(args):
                                 num_images_per_prompt=1,
                                 mask_feature=True,
                                 ).video
-        print(videos.shape)
         try:
             imageio.mimwrite(args.save_img_path + prompt.replace(' ', '_') + '_%04d' % args.run_time + 'webv-imageio.mp4', videos[0], fps=8, quality=9) # highest quality is 10, lowest is 0
         except:
             print('Error when saving {}'.format(prompt))
         video_grids.append(videos)
     video_grids = torch.cat(video_grids, dim=0)
-    print(video_grids.shape)
 
     video_grids = save_video_grid(video_grids)
 

@@ -499,12 +499,14 @@ class LatteT2V(ModelMixin, ConfigMixin):
         norm_eps: float = 1e-5,
         attention_type: str = "default",
         caption_channels: int = None,
+        video_length: int = 16,
     ):
         super().__init__()
         self.use_linear_projection = use_linear_projection
         self.num_attention_heads = num_attention_heads
         self.attention_head_dim = attention_head_dim
         inner_dim = num_attention_heads * attention_head_dim
+        self.video_length = video_length
 
         conv_cls = nn.Conv2d if USE_PEFT_BACKEND else LoRACompatibleConv
         linear_cls = nn.Linear if USE_PEFT_BACKEND else LoRACompatibleLinear
@@ -668,7 +670,7 @@ class LatteT2V(ModelMixin, ConfigMixin):
         self.gradient_checkpointing = False
 
         # define temporal positional embedding
-        temp_pos_embed = self.get_1d_sincos_temp_embed(inner_dim, 16) # 1152 hidden size
+        temp_pos_embed = self.get_1d_sincos_temp_embed(inner_dim, video_length) # 1152 hidden size
         self.register_buffer("temp_pos_embed", torch.from_numpy(temp_pos_embed).float().unsqueeze(0), persistent=False)
 
 
@@ -835,9 +837,6 @@ class LatteT2V(ModelMixin, ConfigMixin):
                 if enable_temporal_attentions:
                     hidden_states = rearrange(hidden_states, '(b f) t d -> (b t) f d', b=input_batch_size).contiguous()
 
-                    # print(hidden_states.shape) # 768 16 1152
-                    # print(timestep_temp.shape) # 768 6912
-
                     if use_image_num != 0: # image-video joitn training
                         hidden_states_video = hidden_states[:, :frame, ...]
                         hidden_states_image = hidden_states[:, frame:, ...]
@@ -964,7 +963,7 @@ class LatteT2V(ModelMixin, ConfigMixin):
         return get_1d_sincos_pos_embed_from_grid(embed_dim, pos)
     
     @classmethod
-    def from_pretrained_2d(cls, pretrained_model_path, subfolder=None):
+    def from_pretrained_2d(cls, pretrained_model_path, subfolder=None, **kwargs):
         if subfolder is not None:
             pretrained_model_path = os.path.join(pretrained_model_path, subfolder)
 
@@ -975,7 +974,7 @@ class LatteT2V(ModelMixin, ConfigMixin):
         with open(config_file, "r") as f:
             config = json.load(f)
         
-        model = cls.from_config(config)
+        model = cls.from_config(config, **kwargs)
         
         # model_files = [
         #     os.path.join(pretrained_model_path, 'diffusion_pytorch_model.bin'),
