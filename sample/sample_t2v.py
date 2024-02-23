@@ -9,7 +9,7 @@ from diffusers.schedulers import (DDIMScheduler, DDPMScheduler, PNDMScheduler,
                                   HeunDiscreteScheduler, EulerAncestralDiscreteScheduler,
                                   DEISMultistepScheduler, KDPM2AncestralDiscreteScheduler)
 from diffusers.schedulers.scheduling_dpmsolver_singlestep import DPMSolverSinglestepScheduler
-from diffusers.models import AutoencoderKL
+from diffusers.models import AutoencoderKL, AutoencoderKLTemporalDecoder
 from omegaconf import OmegaConf
 from transformers import T5EncoderModel, T5Tokenizer
 
@@ -20,7 +20,6 @@ from pipeline_videogen import VideoGenPipeline
 from models import get_models
 from utils import save_video_grid
 import imageio
-from copy import deepcopy
 
 def main(args):
     # torch.manual_seed(args.seed)
@@ -30,8 +29,11 @@ def main(args):
     transformer_model = get_models(args).to(device, dtype=torch.float16)
     state_dict = find_model(args.ckpt)
     transformer_model.load_state_dict(state_dict)
-
-    vae = AutoencoderKL.from_pretrained(args.pretrained_model_path, subfolder="vae", torch_dtype=torch.float16).to(device)
+    
+    if args.enable_vae_temporal_decoder:
+        vae = AutoencoderKLTemporalDecoder.from_pretrained(args.pretrained_model_path, subfolder="vae_temporal_decoder", torch_dtype=torch.float16).to(device)
+    else:
+        vae = AutoencoderKL.from_pretrained(args.pretrained_model_path, subfolder="vae", torch_dtype=torch.float16).to(device)
     tokenizer = T5Tokenizer.from_pretrained(args.pretrained_model_path, subfolder="tokenizer")
     text_encoder = T5EncoderModel.from_pretrained(args.pretrained_model_path, subfolder="text_encoder", torch_dtype=torch.float16).to(device)
 
@@ -134,6 +136,7 @@ def main(args):
                                 enable_temporal_attentions=args.enable_temporal_attentions,
                                 num_images_per_prompt=1,
                                 mask_feature=True,
+                                enable_vae_temporal_decoder=args.enable_vae_temporal_decoder
                                 ).video
         try:
             imageio.mimwrite(args.save_img_path + prompt.replace(' ', '_') + '_%04d' % args.run_time + 'webv-imageio.mp4', videos[0], fps=8, quality=9) # highest quality is 10, lowest is 0

@@ -24,6 +24,7 @@ guidance_scale: 7.5
 sample_method: 'PNDM'
 num_sampling_steps: 50
 enable_temporal_attentions: True
+enable_vae_temporal_decoder: False # use temporal vae decoder from SVD, maybe reduce the video flicker (It's not widely tested)
 
 text_prompt: [
               'Yellow and black tropical fish dart through the sea.',

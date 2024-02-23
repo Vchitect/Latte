@@ -541,6 +541,7 @@ class VideoGenPipeline(DiffusionPipeline):
         clean_caption: bool = True,
         mask_feature: bool = True,
         enable_temporal_attentions: bool = True,
+        enable_vae_temporal_decoder: bool = False,
     ) -> Union[VideoPipelineOutput, Tuple]:
         """
         Function invoked when calling the pipeline for generation.
@@ -741,7 +742,10 @@ class VideoGenPipeline(DiffusionPipeline):
         #     image = self.image_processor.postprocess(image, output_type=output_type)
 
         if not output_type == 'latents':
-            video = self.decode_latents(latents)
+            if enable_vae_temporal_decoder:
+                video = self.decode_latents_with_temporal_decoder(latents)
+            else:
+                video = self.decode_latents(latents)
         else:
             video = latents
             return VideoPipelineOutput(video=video)
@@ -762,6 +766,27 @@ class VideoGenPipeline(DiffusionPipeline):
         for frame_idx in range(latents.shape[0]):
             video.append(self.vae.decode(
                 latents[frame_idx:frame_idx+1]).sample)
+        video = torch.cat(video)
+        video = einops.rearrange(video, "(b f) c h w -> b f h w c", f=video_length)
+        video = ((video / 2.0 + 0.5).clamp(0, 1) * 255).to(dtype=torch.uint8).cpu().contiguous()
+        # we always cast to float32 as this does not cause significant overhead and is compatible with bfloa16
+        return video
+    
+    def decode_latents_with_temporal_decoder(self, latents):
+        video_length = latents.shape[2]
+        latents = 1 / self.vae.config.scaling_factor * latents
+        latents = einops.rearrange(latents, "b c f h w -> (b f) c h w")
+        video = []
+
+        decode_chunk_size = 16
+        for frame_idx in range(0, latents.shape[0], decode_chunk_size):
+            num_frames_in = latents[frame_idx : frame_idx + decode_chunk_size].shape[0]
+
+            decode_kwargs = {}
+            decode_kwargs["num_frames"] = num_frames_in
+
+            video.append(self.vae.decode(latents[frame_idx:frame_idx+decode_chunk_size], **decode_kwargs).sample)
+            
         video = torch.cat(video)
         video = einops.rearrange(video, "(b f) c h w -> b f h w c", f=video_length)
         video = ((video / 2.0 + 0.5).clamp(0, 1) * 255).to(dtype=torch.uint8).cpu().contiguous()
