@@ -395,8 +395,6 @@ class BasicTransformerBlock_(nn.Module):
 
         return hidden_states
 
-
-
 class AdaLayerNormSingle(nn.Module):
     r"""
     Norm layer adaptive layer norm single (adaLN-single).
@@ -657,8 +655,6 @@ class LatteT2V(ModelMixin, ConfigMixin):
         self.use_additional_conditions = False
         if norm_type == "ada_norm_single":
             self.use_additional_conditions = self.config.sample_size == 128 # False, 128 -> 1024
-            # print('self.config.sampe_size', self.config.sample_size)
-            # print('self.use_additional_conditions', self.use_additional_conditions)
             # TODO(Sayak, PVP) clean this, for now we use sample size to determine whether to use
             # additional conditions until we find better name
             self.adaln_single = AdaLayerNormSingle(inner_dim, use_additional_conditions=self.use_additional_conditions)
@@ -786,8 +782,6 @@ class LatteT2V(ModelMixin, ConfigMixin):
                 timestep, embedded_timestep = self.adaln_single(
                     timestep, added_cond_kwargs, batch_size=batch_size, hidden_dtype=hidden_states.dtype
                 )
-                # print(timestep.shape) # 3 6*1152
-                # print(embedded_timestep.shape) # 3 1152
 
         # 2. Blocks
         if self.caption_projection is not None:
@@ -807,19 +801,7 @@ class LatteT2V(ModelMixin, ConfigMixin):
         timestep_spatial = repeat(timestep, 'b d -> (b f) d', f=frame + use_image_num).contiguous()
         timestep_temp = repeat(timestep, 'b d -> (b p) d', p=num_patches).contiguous()
 
-        # for block in self.transformer_blocks:
-        #     hidden_states = block(
-        #             hidden_states,
-        #             attention_mask,
-        #             encoder_hidden_states_spatial,
-        #             encoder_attention_mask,
-        #             timestep_spatial,
-        #             cross_attention_kwargs,
-        #             class_labels,
-        #         )
-
         for i, (spatial_block, temp_block) in enumerate(zip(self.transformer_blocks, self.temporal_transformer_blocks)):
-            # spatial_block, temp_block = self.transformer_blocks[i:i+2]
 
             if self.training and self.gradient_checkpointing:
                 hidden_states = torch.utils.checkpoint.checkpoint(

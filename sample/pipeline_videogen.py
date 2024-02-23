@@ -1,4 +1,4 @@
-# Copyright 2023 PixArt-Alpha Authors and The HuggingFace Team. All rights reserved.
+# All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -273,9 +273,6 @@ class VideoGenPipeline(DiffusionPipeline):
             masked_negative_prompt_embeds = (
                 negative_prompt_embeds[:, :keep_indices, :] if negative_prompt_embeds is not None else None
             )
-
-            print(masked_prompt_embeds.shape) # 1 120 4096 第二个维度会变
-            print(masked_negative_prompt_embeds.shape) # 1 120 4096 第二个维度会变
 
             # import torch.nn.functional as F
 
