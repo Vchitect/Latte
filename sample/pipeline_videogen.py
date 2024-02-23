@@ -733,14 +733,6 @@ class VideoGenPipeline(DiffusionPipeline):
                         step_idx = i // getattr(self.scheduler, "order", 1)
                         callback(step_idx, t, latents)
 
-        # if not output_type == "latent":
-        #     image = self.vae.decode(latents / self.vae.config.scaling_factor, return_dict=False)[0]
-        # else:
-        #     image = latents
-
-        # if not output_type == "latent":
-        #     image = self.image_processor.postprocess(image, output_type=output_type)
-
         if not output_type == 'latents':
             if enable_vae_temporal_decoder:
                 video = self.decode_latents_with_temporal_decoder(latents)
@@ -778,7 +770,7 @@ class VideoGenPipeline(DiffusionPipeline):
         latents = einops.rearrange(latents, "b c f h w -> (b f) c h w")
         video = []
 
-        decode_chunk_size = 16
+        decode_chunk_size = 14
         for frame_idx in range(0, latents.shape[0], decode_chunk_size):
             num_frames_in = latents[frame_idx : frame_idx + decode_chunk_size].shape[0]
 
