@@ -17,7 +17,7 @@ frame_interval: 3
 fixed_spatial: False
 attention_bias: True
 learn_sigma: True # important
-extras: 1 # [1, 2, 78]
+extras: 1 # [1, 2] 1 unconditional generation, 2 class-conditional generation
 
 # train config:
 save_ceph: True # important
