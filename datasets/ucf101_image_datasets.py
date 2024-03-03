@@ -160,6 +160,8 @@ class UCF101Images(torch.utils.data.Dataset):
         self.video_num = len(self.video_lists)
 
         # ucf101 video frames
+        self.frame_data_path = configs.frame_data_path # important
+
         self.video_frame_txt = configs.frame_data_txt
         self.video_frame_files = [frame_file.strip() for frame_file in open(self.video_frame_txt)]
         random.shuffle(self.video_frame_files)
