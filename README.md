@@ -87,7 +87,6 @@ torchrun --nnodes=1 --nproc_per_node=N train_with_img.py --config ./configs/ffs/
 ## Contact Us
 **Yaohui Wang**: [wangyaohui@pjlab.org.cn](mailto:wangyaohui@pjlab.org.cn)
 **Xin Ma**: [xin.ma1@monash.edu](mailto:xin.ma1@monash.edu)
-**Xinyuan Chen**: [chenxinyuan@pjlab.org.cn](mailto:chenxinyuan@pjlab.org.cn)
 
 ## Citation
 If you find this work useful for your research, please consider citing it.
