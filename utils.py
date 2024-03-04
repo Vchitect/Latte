@@ -107,7 +107,6 @@ def clip_grad_norm_(
         total_norm = norms[0] if len(norms) == 1 else torch.max(torch.stack(norms))
     else:
         total_norm = torch.norm(torch.stack([torch.norm(g.detach(), norm_type).to(device) for g in grads]), norm_type)
-    # print(total_norm)
 
     if clip_grad:
         if error_if_nonfinite and torch.logical_or(total_norm.isnan(), total_norm.isinf()):
