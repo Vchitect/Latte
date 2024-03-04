@@ -191,7 +191,7 @@ class UCF101Images(torch.utils.data.Dataset):
         assert end_frame_ind - start_frame_ind >= self.target_video_len
         frame_indice = np.linspace(start_frame_ind, end_frame_ind-1, self.target_video_len, dtype=int)
         # print(frame_indice)
-        video = vframes[frame_indice] # 这里没有根据步长取视频帧
+        video = vframes[frame_indice]
         # print(type(video))
         # videotransformer data proprecess
         video = self.transform(video) # T C H W
