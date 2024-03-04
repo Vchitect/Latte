@@ -26,6 +26,12 @@ try:
 except:
     XFORMERS_IS_AVAILBLE = False
 
+try:
+    from fla.ops.triton.rebased_fast import parallel_rebased
+except:
+    REBASED_IS_AVAILABLE = False
+
+
 # from timm.models.layers.helpers import to_2tuple
 # from timm.models.layers.trace_utils import _assert
 
@@ -37,7 +43,7 @@ def modulate(x, shift, scale):
 #################################################################################
 
 class Attention(nn.Module):
-    def __init__(self, dim, num_heads=8, qkv_bias=False, attn_drop=0., proj_drop=0., use_lora=False, attention_mode='math'):
+    def __init__(self, dim, num_heads=8, qkv_bias=False, attn_drop=0., proj_drop=0., use_lora=False, attention_mode='math', eps=1e-12):
         super().__init__()
         assert dim % num_heads == 0, 'dim should be divisible by num_heads'
         self.num_heads = num_heads
@@ -51,6 +57,7 @@ class Attention(nn.Module):
         self.attn_drop = nn.Dropout(attn_drop)
         self.proj = nn.Linear(dim, dim)
         self.proj_drop = nn.Dropout(proj_drop)
+        self.eps = eps
 
     def forward(self, x):
         B, N, C = x.shape
@@ -72,6 +79,8 @@ class Attention(nn.Module):
             attn = self.attn_drop(attn)
             x = (attn @ v).transpose(1, 2).reshape(B, N, C)
 
+        elif self.attention_mode == 'rebased':
+            x = parallel_rebased(q, k, v, self.eps, True, True).reshape(B, N, C)
         else:
             raise NotImplemented
 
