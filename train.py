@@ -121,20 +121,12 @@ def main(args):
 
     # set distributed training
     model = DDP(model.to(device), device_ids=[local_rank])
-    
-    if args.extras == 78:
-        # Load the tokenizers
-        tokenizer = T5Tokenizer.from_pretrained(args.pretrained_model_path, subfolder="tokenizer")
-        # Load T5
-        text_encoder = T5EncoderModel.from_pretrained(args.pretrained_model_path, subfolder="text_encoder")
 
     logger.info(f"Model Parameters: {sum(p.numel() for p in model.parameters()):,}")
     opt = torch.optim.AdamW(model.parameters(), lr=1e-4, weight_decay=0)
 
     # Freeze vae and text_encoder
     vae.requires_grad_(False)
-    if args.extras == 78:
-        text_encoder.requires_grad_(False)
 
     # Setup data:
     dataset = get_dataset(args)

@@ -91,10 +91,7 @@ def main(args):
     requires_grad(ema, False)
     diffusion = create_diffusion(timestep_respacing="")  # default: 1000 steps, linear noise schedule
     # vae = AutoencoderKL.from_pretrained(f"stabilityai/sd-vae-ft-ema").to(device)
-    if args.extras == 78:
-        vae = AutoencoderKL.from_pretrained(args.pretrained_model_path, subfolder="vae").to(device)
-    else:
-        vae = AutoencoderKL.from_pretrained(args.pretrained_model_path, subfolder="sd-vae-ft-mse").to(device)
+    vae = AutoencoderKL.from_pretrained(args.pretrained_model_path, subfolder="sd-vae-ft-mse").to(device)
 
     # # use pretrained model?
     if args.pretrained:
@@ -156,9 +153,6 @@ def main(args):
 
     # set distributed training
     model = DDP(model.to(device), device_ids=[local_rank])
-    
-    if args.extras == 78:
-        text_encoder = TextEmbedder(args.pretrained_model_path, dropout_prob=0.1).to(device)
 
     logger.info(f"Model Parameters: {sum(p.numel() for p in model.parameters()):,}")
     opt = torch.optim.AdamW(model.parameters(), lr=1e-4, weight_decay=0)
