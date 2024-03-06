@@ -46,6 +46,9 @@ class GatedSelfAttentionDense(nn.Module):
         if attn_type == 'rebased':
             from models.utils import RebasedAttnProcessor
             attn_proc = RebasedAttnProcessor()
+        elif attn_type == 'ring':
+            from models.utils import RingAttnProcessor
+            attn_proc = RingAttnProcessor()
         else:
             attn_proc = None
 
@@ -222,6 +225,9 @@ class BasicTransformerBlock_(nn.Module):
         if attn_type == 'rebased':
             from models.utils import RebasedAttnProcessor
             attn_proc = RebasedAttnProcessor()
+        elif attn_type == 'ring':
+            from models.utils import RingAttnProcessor
+            attn_proc = RingAttnProcessor()
         else:
             attn_proc = None
 

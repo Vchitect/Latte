@@ -215,12 +215,19 @@ def count_params(model, verbose=False):
     return total_params
 
 try:
+    # needs to have https://github.com/corl-team/rebased/ installed
     from fla.ops.triton.rebased_fast import parallel_rebased
 except:
     REBASED_IS_AVAILABLE = False
 
+try:
+    # needs to have https://github.com/lucidrains/ring-attention-pytorch installed
+    from ring_attention_pytorch.ring_flash_attention_cuda import ring_flash_attn_cuda
+except:
+    RING_ATTENTION_IS_AVAILABLE = False
+
 from diffusers.models.attention_processor import Attention
-class RebasedAttnProcessor:
+class AltAttnProcessor:
 
     def __call__(
         self,
@@ -276,7 +283,7 @@ class RebasedAttnProcessor:
 
         # the output of sdp = (batch, num_heads, seq_len, head_dim)
         # TODO: add support for attn.scale when we move to Torch 2.1
-        hidden_states = parallel_rebased(query, key, value, eps, True, True)
+        hidden_states = self.attn_fn(query, key, value, eps, True, True)
 
         hidden_states = hidden_states.transpose(1, 2).reshape(batch_size, -1, attn.heads * head_dim)
         hidden_states = hidden_states.to(query.dtype)
@@ -295,3 +302,13 @@ class RebasedAttnProcessor:
         hidden_states = hidden_states / attn.rescale_output_factor
 
         return hidden_states
+
+class RebasedAttnProcessor(AltAttnProcessor):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.attn_fn = parallel_rebased
+
+class RingAttnProcessor(AltAttnProcessor):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.attn_fn = ring_flash_attn_cuda
