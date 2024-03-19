@@ -7,7 +7,6 @@ import subprocess
 import numpy as np
 import torch.distributed as dist
 
-# from torch._six import inf
 from torch import inf
 from PIL import Image
 from typing import Union, Iterable
@@ -123,7 +122,6 @@ def clip_grad_norm_(
         for g in grads:
             g.detach().mul_(clip_coef_clamped.to(g.device))
         # gradient_cliped = torch.norm(torch.stack([torch.norm(g.detach(), norm_type).to(device) for g in grads]), norm_type)
-        # print(gradient_cliped)
     return total_norm
 
 def get_experiment_dir(root_dir, args):
@@ -264,7 +262,6 @@ def save_video_grid(video, nrow=None):
     video_grid = torch.zeros((t, (padding + h) * nrow + padding,
                            (padding + w) * ncol + padding, c), dtype=torch.uint8)
     
-    print(video_grid.shape)
     for i in range(b):
         r = i // ncol
         c = i % ncol
