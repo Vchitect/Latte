@@ -13,7 +13,6 @@ import torch
 torch.backends.cuda.matmul.allow_tf32 = True
 torch.backends.cudnn.allow_tf32 = True
 
-import io
 import os
 import math
 import argparse
@@ -104,22 +103,8 @@ def main(args):
         # 1. filter out unnecessary keys
         pretrained_dict = {}
         for k, v in checkpoint.items():
-            # if 'y_embedder' in k and args.dataset != 'ImageNet' and 'pretrained' in args.pretrained:
-            #     logger.info('Warning: ignoring the weights from y_embedder!')
-            #     continue
-            # if 'y_embedder' in k:
-            # # if 'y_embedder' in k and 'pretrained' in args.pretrained:
-            # if 'y_embedder' in k:
-            #     logger.info('Warning: ignoring the {} weights!'.format(k))
-            #     continue
-
             if k in model_dict:
                 pretrained_dict[k] = v
-                # logger.info('Successfully Load weights from {}'.format(k))
-            # elif 'x_embedder' in k: # replace model parameter name
-            #     pretrained_dict['patch_embedder'] = v
-            # elif 't_embedder' in k: # replace model parameter name
-            #     pretrained_dict['timestep_embedder'] = v
             else:
                 logger.info('Ignoring: {}'.format(k))
         logger.info('Successfully Load {}% original pretrained model weights '.format(len(pretrained_dict) / len(checkpoint.items()) * 100))

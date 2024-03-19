@@ -201,8 +201,6 @@ def main(args):
 
             x = video_data['video'].to(device, non_blocking=True)
             video_name = video_data['video_name']
-            # x = x.to(device)
-            # y = y.to(device) # y is text prompt; no need put in gpu
             with torch.no_grad():
                 # Map input images to latent space + normalize latents:
                 b, _, _, _, _ = x.shape
