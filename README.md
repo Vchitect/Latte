@@ -26,9 +26,9 @@ This repository contains:
 - (🔥 New) Feb. 24, 2024. 💥 We are very grateful that researchers and developers like our work. We will continue to update our LatteT2V model, hoping that our efforts can help the community develop. Our Latte discord channel <a href="https://discord.gg/RguYqhVU92" style="text-decoration:none;">
 <img src="https://user-images.githubusercontent.com/25839884/218347213-c080267f-cbb6-443e-8532-8e1ed9a58ea9.png" width="3%" alt="" /></a> is creaed for discussions. Coders are welcome to contribute.
 
-- (🔥 New) Jan. 9, 2024. 💥 A LatteT2V model initialized with the [PixArt-α](https://github.com/PixArt-alpha/PixArt-alpha) weights is released. This new LatteT2V model weight can be found in [here](https://huggingface.co/maxin-cn/Latte/resolve/main/t2v.pt?download=true).
+- (🔥 New) Jan. 9, 2024. 💥 A new LatteT2V model initialized with the [PixArt-α](https://github.com/PixArt-alpha/PixArt-alpha) weights is released, which can be found in [here](https://huggingface.co/maxin-cn/Latte/resolve/main/t2v.pt?download=true).
 
-- (🔥 New) Oct. 31, 2023. 💥 The training and inference codes of Latte are released. All checkpoints can be found in [here](https://huggingface.co/maxin-cn/Latte/tree/main). Just enjoy it!
+- (🔥 New) Oct. 31, 2023. 💥 The training and inference codes of Latte are released. All checkpoints (including FaceForensics, SkyTimelapse, UCF101, and Taichi-HD) can be found in [here](https://huggingface.co/maxin-cn/Latte/tree/main). We also provide a LatteT2V inference code. Just enjoy it!
 
 
 ## Setup
