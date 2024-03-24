@@ -28,7 +28,7 @@ This repository contains:
 
 - (🔥 New) Jan. 9, 2024. 💥 A updated LatteT2V model initialized with the [PixArt-α](https://github.com/PixArt-alpha/PixArt-alpha) is released, checkpoint can be found [here](https://huggingface.co/maxin-cn/Latte/resolve/main/t2v.pt?download=true).
 
-- (🔥 New) Oct. 31, 2023. 💥 The training and inference code are released. All checkpoints (including FaceForensics, SkyTimelapse, UCF101, and Taichi-HD) can be found [here](https://huggingface.co/maxin-cn/Latte/tree/main). In addition, LatteT2V inference code is provided.
+- (🔥 New) Oct. 31, 2023. 💥 The training and inference code is released. All checkpoints (including FaceForensics, SkyTimelapse, UCF101, and Taichi-HD) can be found [here](https://huggingface.co/maxin-cn/Latte/tree/main). In addition, LatteT2V inference code is provided.
 
 
 ## Setup
