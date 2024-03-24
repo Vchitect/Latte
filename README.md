@@ -26,6 +26,8 @@ This repository contains:
 - (🔥 New) Feb. 24, 2024. 💥 We are very grateful that researchers and developers like our work. We will continue to update our LatteT2V model, hoping that our efforts can help the community develop. Our Latte discord channel <a href="https://discord.gg/RguYqhVU92" style="text-decoration:none;">
 <img src="https://user-images.githubusercontent.com/25839884/218347213-c080267f-cbb6-443e-8532-8e1ed9a58ea9.png" width="3%" alt="" /></a> is creaed for discussions. Coders are welcome to contribute.
 
+- (🔥 New) Oct. 31, 2023. 💥 The training and inference codes of Latte are released. Just enjoy it!
+
 
 ## Setup
 
