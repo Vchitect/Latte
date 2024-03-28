@@ -33,9 +33,9 @@ This repository contains:
 - (🔥 New) Feb. 24, 2024. 💥 We are very grateful that researchers and developers like our work. We will continue to update our LatteT2V model, hoping that our efforts can help the community develop. Our Latte discord channel <a href="https://discord.gg/RguYqhVU92" style="text-decoration:none;">
 <img src="https://user-images.githubusercontent.com/25839884/218347213-c080267f-cbb6-443e-8532-8e1ed9a58ea9.png" width="3%" alt="" /></a> is created for discussions. Coders are welcome to contribute.
 
-- (🔥 New) Jan. 9, 2024. 💥 A updated LatteT2V model initialized with the [PixArt-α](https://github.com/PixArt-alpha/PixArt-alpha) is released, checkpoint can be found [here](https://huggingface.co/maxin-cn/Latte/resolve/main/t2v.pt?download=true).
+- (🔥 New) Jan. 9, 2024. 💥 An updated LatteT2V model initialized with the [PixArt-α](https://github.com/PixArt-alpha/PixArt-alpha) is released, the checkpoint can be found [here](https://huggingface.co/maxin-cn/Latte/resolve/main/t2v.pt?download=true).
 
-- (🔥 New) Oct. 31, 2023. 💥 The training and inference code is released. All checkpoints (including FaceForensics, SkyTimelapse, UCF101, and Taichi-HD) can be found [here](https://huggingface.co/maxin-cn/Latte/tree/main). In addition, LatteT2V inference code is provided.
+- (🔥 New) Oct. 31, 2023. 💥 The training and inference code is released. All checkpoints (including FaceForensics, SkyTimelapse, UCF101, and Taichi-HD) can be found [here](https://huggingface.co/maxin-cn/Latte/tree/main). In addition, the LatteT2V inference code is provided.
 
 
 ## Setup
@@ -88,8 +88,8 @@ or If you have a cluster that uses slurm, you can also train Latte's model using
 sbatch slurm_scripts/ffs.slurm
 ```
 
-We also provide the video-image joint training scripts [`train_with_img.py`](train_with_img.py). Similar to [`train.py`](train.py) scripts, this scripts can be also used to train class-conditional and unconditional
-Latte models. For example, if you wan to train Latte model on the FaceForensics dataset, you can use:
+We also provide the video-image joint training scripts [`train_with_img.py`](train_with_img.py). Similar to [`train.py`](train.py) scripts, these scripts can be also used to train class-conditional and unconditional
+Latte models. For example, if you want to train the Latte model on the FaceForensics dataset, you can use:
 
 ```bash
 torchrun --nnodes=1 --nproc_per_node=N train_with_img.py --config ./configs/ffs/ffs_img_train.yaml
