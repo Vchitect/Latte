@@ -141,6 +141,36 @@ def betas_for_alpha_bar(num_diffusion_timesteps, alpha_bar, max_beta=0.999):
     return np.array(betas)
 
 
+from xtuner.parallel.sequence import get_sequence_parallel_world_size, get_sequence_parallel_rank, reduce_sequence_parallel_loss
+import torch
+import torch.distributed as dist
+def split_for_sequence_parallel(tokens, split_dim=1):
+    seq_parallel_world_size = get_sequence_parallel_world_size()
+    if seq_parallel_world_size == 1:
+        return tokens
+    
+    seq_parallel_world_rank = get_sequence_parallel_rank()
+
+    # bs, seq_len, dim = tokens.shape
+    seq_len = tokens.shape[split_dim]
+    assert seq_len % seq_parallel_world_size == 0
+    sub_seq_len = seq_len // seq_parallel_world_size
+    sub_seq_start = seq_parallel_world_rank * sub_seq_len
+    sub_seq_end = (seq_parallel_world_rank + 1) * sub_seq_len
+
+    if split_dim == 0:
+        tokens = tokens[sub_seq_start:sub_seq_end]
+    elif split_dim == 1:
+        tokens = tokens[:, sub_seq_start:sub_seq_end]
+    elif split_dim == 2:
+        tokens = tokens[:, :, sub_seq_start:sub_seq_end]
+    elif split_dim == 3:
+        tokens = tokens[:, :, :, sub_seq_start:sub_seq_end]
+    else:
+        raise NotImplementedError
+    return tokens
+
+
 class GaussianDiffusion:
     """
     Utilities for training and sampling diffusion models.
@@ -732,7 +762,7 @@ class GaussianDiffusion:
             model_kwargs = {}
         if noise is None:
             noise = th.randn_like(x_start)
-        x_t = self.q_sample(x_start, t, noise=noise)
+        x_t = self.q_sample(x_start, t, noise=noise)  # x: (bs, frame, c_in, h, w), t: (bs, )
 
         terms = {}
 
@@ -748,7 +778,10 @@ class GaussianDiffusion:
             if self.loss_type == LossType.RESCALED_KL:
                 terms["loss"] *= self.num_timesteps
         elif self.loss_type == LossType.MSE or self.loss_type == LossType.RESCALED_MSE:
-            model_output = model(x_t, t, **model_kwargs)
+            model_output = model(x_t, t, **model_kwargs)  # (bs, frame, 2*c_in, h//p, w)
+            x_t = split_for_sequence_parallel(x_t, split_dim=3)
+            x_start = split_for_sequence_parallel(x_start, split_dim=3)
+            noise = split_for_sequence_parallel(noise, split_dim=3)
             # try:
             #     model_output = model(x_t, t, **model_kwargs).sample # for tav unet
             # except:
@@ -784,7 +817,8 @@ class GaussianDiffusion:
                 ModelMeanType.EPSILON: noise,
             }[self.model_mean_type]
             assert model_output.shape == target.shape == x_start.shape
-            terms["mse"] = mean_flat((target - model_output) ** 2)
+            loss = mean_flat((target - model_output) ** 2)
+            terms["mse"] = reduce_sequence_parallel_loss(loss, torch.tensor(1, device=loss.device, dtype=loss.dtype))
             if "vb" in terms:
                 terms["loss"] = terms["mse"] + terms["vb"]
             else:

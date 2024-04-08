@@ -36,6 +36,9 @@ def modulate(x, shift, scale):
 #               Attention Layers from TIMM                                      #
 #################################################################################
 
+from xtuner.parallel.sequence.attention import post_process_for_sequence_parallel_attn, pre_process_for_sequence_parallel_attn
+import torch.distributed as dist
+
 class Attention(nn.Module):
     def __init__(self, dim, num_heads=8, qkv_bias=False, attn_drop=0., proj_drop=0., use_lora=False, attention_mode='math'):
         super().__init__()
@@ -52,28 +55,46 @@ class Attention(nn.Module):
         self.proj = nn.Linear(dim, dim)
         self.proj_drop = nn.Dropout(proj_drop)
 
-    def forward(self, x):
+    def forward(self, x, use_sequence_parallel=True):
         B, N, C = x.shape
-        qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4).contiguous()
-        q, k, v = qkv.unbind(0)   # make torchscript happy (cannot use tensor as tuple)
+        qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, C // self.num_heads)
+        q, k, v = qkv[:, :, 0], qkv[:, :, 1], qkv[:, :, 2]
+
+        # qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4).contiguous()
+        # q, k, v = qkv.unbind(0)   # make torchscript happy (cannot use tensor as tuple)
+
+        enable_sequence_parallel = (
+            dist.is_initialized() and get_sequence_parallel_world_size() > 1
+            and self.training and use_sequence_parallel)
+        if enable_sequence_parallel:
+            q, k, v = pre_process_for_sequence_parallel_attn(q, k, v)
+        
+        q = q.transpose(1, 2).contiguous()  # bshd -> bhsd
+        k = k.transpose(1, 2).contiguous()
+        v = v.transpose(1, 2).contiguous()
         
         if self.attention_mode == 'xformers': # cause loss nan while using with amp
-            x = xformers.ops.memory_efficient_attention(q, k, v).reshape(B, N, C)
+            x = xformers.ops.memory_efficient_attention(q, k, v)
 
         elif self.attention_mode == 'flash':
             # cause loss nan while using with amp
             # Optionally use the context manager to ensure one of the fused kerenels is run
             with torch.backends.cuda.sdp_kernel(enable_math=False):
-                x = torch.nn.functional.scaled_dot_product_attention(q, k, v).reshape(B, N, C) # require pytorch 2.0
+                x = torch.nn.functional.scaled_dot_product_attention(q, k, v) # require pytorch 2.0
 
         elif self.attention_mode == 'math':
             attn = (q @ k.transpose(-2, -1)) * self.scale
             attn = attn.softmax(dim=-1)
             attn = self.attn_drop(attn)
-            x = (attn @ v).transpose(1, 2).reshape(B, N, C)
+            x = (attn @ v).transpose(1, 2).contiguous()
 
         else:
             raise NotImplemented
+        
+        if enable_sequence_parallel:
+            x = post_process_for_sequence_parallel_attn(x).contiguous()
+        
+        x = x.reshape(B, N, C)
 
         x = self.proj(x)
         x = self.proj_drop(x)
@@ -177,9 +198,9 @@ class TransformerBlock(nn.Module):
             nn.Linear(hidden_size, 6 * hidden_size, bias=True)
         )
 
-    def forward(self, x, c):
+    def forward(self, x, c, use_sequence_parallel=True):
         shift_msa, scale_msa, gate_msa, shift_mlp, scale_mlp, gate_mlp = self.adaLN_modulation(c).chunk(6, dim=1)
-        x = x + gate_msa.unsqueeze(1) * self.attn(modulate(self.norm1(x), shift_msa, scale_msa))
+        x = x + gate_msa.unsqueeze(1) * self.attn(modulate(self.norm1(x), shift_msa, scale_msa), use_sequence_parallel)
         x = x + gate_mlp.unsqueeze(1) * self.mlp(modulate(self.norm2(x), shift_mlp, scale_mlp))
         return x
 
@@ -202,6 +223,35 @@ class FinalLayer(nn.Module):
         x = modulate(self.norm_final(x), shift, scale)
         x = self.linear(x)
         return x
+
+
+from xtuner.parallel.sequence import get_sequence_parallel_world_size, get_sequence_parallel_rank
+
+def split_for_sequence_parallel(tokens, split_dim=1):
+    seq_parallel_world_size = get_sequence_parallel_world_size()
+    if seq_parallel_world_size == 1:
+        return tokens
+    
+    seq_parallel_world_rank = get_sequence_parallel_rank()
+
+    # bs, seq_len, dim = tokens.shape
+    seq_len = tokens.shape[split_dim]
+    assert seq_len % seq_parallel_world_size == 0
+    sub_seq_len = seq_len // seq_parallel_world_size
+    sub_seq_start = seq_parallel_world_rank * sub_seq_len
+    sub_seq_end = (seq_parallel_world_rank + 1) * sub_seq_len
+
+    if split_dim == 0:
+        tokens = tokens[sub_seq_start:sub_seq_end]
+    elif split_dim == 1:
+        tokens = tokens[:, sub_seq_start:sub_seq_end]
+    elif split_dim == 2:
+        tokens = tokens[:, :, sub_seq_start:sub_seq_end]
+    elif split_dim == 3:
+        tokens = tokens[:, :, :, sub_seq_start:sub_seq_end]
+    else:
+        raise NotImplementedError
+    return tokens
 
 
 class Latte(nn.Module):
@@ -301,14 +351,17 @@ class Latte(nn.Module):
         x: (N, T, patch_size**2 * C)
         imgs: (N, H, W, C)
         """
+        seq_parallel_world_size = get_sequence_parallel_world_size()
         c = self.out_channels
         p = self.x_embedder.patch_size[0]
-        h = w = int(x.shape[1] ** 0.5)
-        assert h * w == x.shape[1]
+        h = w = int((x.shape[1] * seq_parallel_world_size) ** 0.5)
+        assert h * w == x.shape[1] * seq_parallel_world_size
+        assert h % seq_parallel_world_size == 0
+        h_per_rank = h // seq_parallel_world_size
 
-        x = x.reshape(shape=(x.shape[0], h, w, p, p, c))
+        x = x.reshape(shape=(x.shape[0], h_per_rank, w, p, p, c))
         x = torch.einsum('nhwpqc->nchpwq', x)
-        imgs = x.reshape(shape=(x.shape[0], c, h * p, h * p))
+        imgs = x.reshape(shape=(x.shape[0], c, h_per_rank * p, w * p))
         return imgs
 
     # @torch.cuda.amp.autocast()
@@ -324,12 +377,19 @@ class Latte(nn.Module):
         """
         if use_fp16:
             x = x.to(dtype=torch.float16)
+        
         batches, frames, channels, high, weight = x.shape 
         x = rearrange(x, 'b f c h w -> (b f) c h w')
         x = self.x_embedder(x) + self.pos_embed  
-        t = self.t_embedder(t, use_fp16=use_fp16)              
-        timestep_spatial = repeat(t, 'n d -> (n c) d', c=self.temp_embed.shape[1] + use_image_num)
+        # print(f'before model x.shape = {x.shape}')
+        bs, seq_len, dim = x.shape
+        seq_parallel_world_size = get_sequence_parallel_world_size()
+        assert seq_len % seq_parallel_world_size == 0
+        x = split_for_sequence_parallel(x, split_dim=1)
+        t = self.t_embedder(t, use_fp16=use_fp16)           
+        timestep_spatial = repeat(t, 'n d -> (n c) d', c=self.temp_embed.shape[1] + use_image_num)  # (1, num_frames, hidden_size)
         timestep_temp = repeat(t, 'n d -> (n c) d', c=self.pos_embed.shape[1]) 
+        timestep_temp = split_for_sequence_parallel(timestep_temp, split_dim=0)
 
         if self.extras == 2:
             y = self.y_embedder(y, self.training)
@@ -367,7 +427,7 @@ class Latte(nn.Module):
                 c = timestep_spatial + text_embedding_spatial
             else:
                 c = timestep_spatial
-            x  = spatial_block(x, c)
+            x  = spatial_block(x, c, use_sequence_parallel=True)
 
             x = rearrange(x, '(b f) t d -> (b t) f d', b=batches)
             x_video = x[:, :(frames-use_image_num), :]
@@ -384,7 +444,7 @@ class Latte(nn.Module):
             else:
                 c = timestep_temp
 
-            x_video = temp_block(x_video, c)
+            x_video = temp_block(x_video, c, use_sequence_parallel=False)
             x = torch.cat([x_video, x_image], dim=1)
             x = rearrange(x, '(b t) f d -> (b f) t d', b=batches)
 
