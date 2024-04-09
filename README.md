@@ -16,7 +16,9 @@ We propose a novel Latent Diffusion Transformer, namely Latte, for video generat
  ![The architecture of Latte](visuals/architecture.svg){width=20}
  -->
  
-<img src="visuals/architecture.svg" width="600">
+<div align="center">
+    <img src="visuals/architecture.svg" width="600">
+</div>
 
 
 This repository contains:
