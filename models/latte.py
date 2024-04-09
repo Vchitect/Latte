@@ -55,6 +55,7 @@ class Attention(nn.Module):
         q, k, v = qkv.unbind(0)   # make torchscript happy (cannot use tensor as tuple)
         
         if self.attention_mode == 'xformers': # cause loss nan while using with amp
+            # https://github.com/facebookresearch/xformers/blob/e8bd8f932c2f48e3a3171d06749eecbbf1de420c/xformers/ops/fmha/__init__.py#L135
             q_xf = q.transpose(1,2).contiguous()
             k_xf = k.transpose(1,2).contiguous()
             v_xf = v.transpose(1,2).contiguous()
