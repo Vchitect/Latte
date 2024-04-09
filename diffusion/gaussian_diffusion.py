@@ -9,6 +9,8 @@ import math
 import numpy as np
 import torch as th
 import enum
+from xtuner.parallel.sequence import reduce_sequence_parallel_loss, split_for_sequence_parallel
+import torch
 
 from .diffusion_utils import discretized_gaussian_log_likelihood, normal_kl
 
@@ -139,36 +141,6 @@ def betas_for_alpha_bar(num_diffusion_timesteps, alpha_bar, max_beta=0.999):
         t2 = (i + 1) / num_diffusion_timesteps
         betas.append(min(1 - alpha_bar(t2) / alpha_bar(t1), max_beta))
     return np.array(betas)
-
-
-from xtuner.parallel.sequence import get_sequence_parallel_world_size, get_sequence_parallel_rank, reduce_sequence_parallel_loss
-import torch
-import torch.distributed as dist
-def split_for_sequence_parallel(tokens, split_dim=1):
-    seq_parallel_world_size = get_sequence_parallel_world_size()
-    if seq_parallel_world_size == 1:
-        return tokens
-    
-    seq_parallel_world_rank = get_sequence_parallel_rank()
-
-    # bs, seq_len, dim = tokens.shape
-    seq_len = tokens.shape[split_dim]
-    assert seq_len % seq_parallel_world_size == 0
-    sub_seq_len = seq_len // seq_parallel_world_size
-    sub_seq_start = seq_parallel_world_rank * sub_seq_len
-    sub_seq_end = (seq_parallel_world_rank + 1) * sub_seq_len
-
-    if split_dim == 0:
-        tokens = tokens[sub_seq_start:sub_seq_end]
-    elif split_dim == 1:
-        tokens = tokens[:, sub_seq_start:sub_seq_end]
-    elif split_dim == 2:
-        tokens = tokens[:, :, sub_seq_start:sub_seq_end]
-    elif split_dim == 3:
-        tokens = tokens[:, :, :, sub_seq_start:sub_seq_end]
-    else:
-        raise NotImplementedError
-    return tokens
 
 
 class GaussianDiffusion:

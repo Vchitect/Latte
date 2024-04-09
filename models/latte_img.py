@@ -14,6 +14,7 @@ import numpy as np
 
 from einops import rearrange, repeat
 from timm.models.vision_transformer import Mlp, PatchEmbed
+from xtuner.parallel.sequence import get_sequence_parallel_world_size, split_for_sequence_parallel
 
 import os
 import sys
@@ -223,35 +224,6 @@ class FinalLayer(nn.Module):
         x = modulate(self.norm_final(x), shift, scale)
         x = self.linear(x)
         return x
-
-
-from xtuner.parallel.sequence import get_sequence_parallel_world_size, get_sequence_parallel_rank
-
-def split_for_sequence_parallel(tokens, split_dim=1):
-    seq_parallel_world_size = get_sequence_parallel_world_size()
-    if seq_parallel_world_size == 1:
-        return tokens
-    
-    seq_parallel_world_rank = get_sequence_parallel_rank()
-
-    # bs, seq_len, dim = tokens.shape
-    seq_len = tokens.shape[split_dim]
-    assert seq_len % seq_parallel_world_size == 0
-    sub_seq_len = seq_len // seq_parallel_world_size
-    sub_seq_start = seq_parallel_world_rank * sub_seq_len
-    sub_seq_end = (seq_parallel_world_rank + 1) * sub_seq_len
-
-    if split_dim == 0:
-        tokens = tokens[sub_seq_start:sub_seq_end]
-    elif split_dim == 1:
-        tokens = tokens[:, sub_seq_start:sub_seq_end]
-    elif split_dim == 2:
-        tokens = tokens[:, :, sub_seq_start:sub_seq_end]
-    elif split_dim == 3:
-        tokens = tokens[:, :, :, sub_seq_start:sub_seq_end]
-    else:
-        raise NotImplementedError
-    return tokens
 
 
 class Latte(nn.Module):
