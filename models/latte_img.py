@@ -11,10 +11,15 @@ import math
 import torch
 import torch.nn as nn
 import numpy as np
+import torch.distributed as dist
 
 from einops import rearrange, repeat
 from timm.models.vision_transformer import Mlp, PatchEmbed
-from xtuner.parallel.sequence import get_sequence_parallel_world_size, split_for_sequence_parallel, get_sequence_parallel_group
+from xtuner.parallel.sequence import (
+    get_sequence_parallel_world_size, split_for_sequence_parallel, 
+    get_sequence_parallel_group, gather_forward_split_backward,
+    post_process_for_sequence_parallel_attn, pre_process_for_sequence_parallel_attn,
+    split_forward_gather_backward)
 
 import os
 import sys
@@ -36,12 +41,6 @@ def modulate(x, shift, scale):
 #################################################################################
 #               Attention Layers from TIMM                                      #
 #################################################################################
-
-from xtuner.parallel.sequence import (
-    post_process_for_sequence_parallel_attn, pre_process_for_sequence_parallel_attn,
-    gather_forward_split_backward, get_sequence_parallel_group
-    )
-import torch.distributed as dist
 
 class Attention(nn.Module):
     def __init__(self, dim, num_heads=8, qkv_bias=False, attn_drop=0., proj_drop=0., use_lora=False, attention_mode='math'):
@@ -357,11 +356,15 @@ class Latte(nn.Module):
         bs, seq_len, dim = x.shape
         seq_parallel_world_size = get_sequence_parallel_world_size()
         assert seq_len % seq_parallel_world_size == 0
-        x = split_for_sequence_parallel(x, get_sequence_parallel_group(), split_dim=1)
+
+        x = split_forward_gather_backward(x, get_sequence_parallel_group(), dim=1, grad_scale="down")
+        # x = split_for_sequence_parallel(x, get_sequence_parallel_group(), dim=1)
         t = self.t_embedder(t, use_fp16=use_fp16)           
         timestep_spatial = repeat(t, 'n d -> (n c) d', c=self.temp_embed.shape[1] + use_image_num)  # (1, num_frames, hidden_size)
-        timestep_temp = repeat(t, 'n d -> (n c) d', c=self.pos_embed.shape[1]) 
-        timestep_temp = split_for_sequence_parallel(timestep_temp, get_sequence_parallel_group(), split_dim=0)
+        timestep_temp = repeat(t, 'n d -> n c d', c=self.pos_embed.shape[1]) 
+        timestep_temp = split_forward_gather_backward(timestep_temp, get_sequence_parallel_group(), dim=1, grad_scale="down")
+        # timestep_temp = split_for_sequence_parallel(timestep_temp, get_sequence_parallel_group(), dim=1)
+        timestep_temp = timestep_temp.flatten(0, 1)
 
         if self.extras == 2:
             y = self.y_embedder(y, self.training)
