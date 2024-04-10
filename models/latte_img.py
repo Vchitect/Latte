@@ -16,10 +16,8 @@ import torch.distributed as dist
 from einops import rearrange, repeat
 from timm.models.vision_transformer import Mlp, PatchEmbed
 from xtuner.parallel.sequence import (
-    get_sequence_parallel_world_size, split_for_sequence_parallel, 
-    get_sequence_parallel_group, gather_forward_split_backward,
-    post_process_for_sequence_parallel_attn, pre_process_for_sequence_parallel_attn,
-    split_forward_gather_backward, all_to_all)
+    get_sequence_parallel_world_size, get_sequence_parallel_group, 
+    gather_forward_split_backward, split_forward_gather_backward, all_to_all)
 
 import os
 import sys
