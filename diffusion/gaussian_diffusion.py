@@ -9,8 +9,6 @@ import math
 import numpy as np
 import torch as th
 import enum
-from xtuner.parallel.sequence import reduce_sequence_parallel_loss, split_for_sequence_parallel
-import torch
 
 from .diffusion_utils import discretized_gaussian_log_likelihood, normal_kl
 
@@ -734,7 +732,7 @@ class GaussianDiffusion:
             model_kwargs = {}
         if noise is None:
             noise = th.randn_like(x_start)
-        x_t = self.q_sample(x_start, t, noise=noise)  # x: (bs, frame, c_in, h, w), t: (bs, )
+        x_t = self.q_sample(x_start, t, noise=noise)
 
         terms = {}
 
@@ -750,7 +748,7 @@ class GaussianDiffusion:
             if self.loss_type == LossType.RESCALED_KL:
                 terms["loss"] *= self.num_timesteps
         elif self.loss_type == LossType.MSE or self.loss_type == LossType.RESCALED_MSE:
-            model_output = model(x_t, t, **model_kwargs)  # (bs, frame, 2*c_in, h, w)
+            model_output = model(x_t, t, **model_kwargs)
             # try:
             #     model_output = model(x_t, t, **model_kwargs).sample # for tav unet
             # except:
