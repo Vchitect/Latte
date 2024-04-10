@@ -750,10 +750,7 @@ class GaussianDiffusion:
             if self.loss_type == LossType.RESCALED_KL:
                 terms["loss"] *= self.num_timesteps
         elif self.loss_type == LossType.MSE or self.loss_type == LossType.RESCALED_MSE:
-            model_output = model(x_t, t, **model_kwargs)  # (bs, frame, 2*c_in, h//p, w)
-            x_t = split_for_sequence_parallel(x_t, split_dim=3)
-            x_start = split_for_sequence_parallel(x_start, split_dim=3)
-            noise = split_for_sequence_parallel(noise, split_dim=3)
+            model_output = model(x_t, t, **model_kwargs)  # (bs, frame, 2*c_in, h, w)
             # try:
             #     model_output = model(x_t, t, **model_kwargs).sample # for tav unet
             # except:
@@ -789,8 +786,7 @@ class GaussianDiffusion:
                 ModelMeanType.EPSILON: noise,
             }[self.model_mean_type]
             assert model_output.shape == target.shape == x_start.shape
-            loss = mean_flat((target - model_output) ** 2)
-            terms["mse"] = reduce_sequence_parallel_loss(loss, torch.tensor(1, device=loss.device, dtype=loss.dtype))
+            terms["mse"] = mean_flat((target - model_output) ** 2)
             if "vb" in terms:
                 terms["loss"] = terms["mse"] + terms["vb"]
             else:

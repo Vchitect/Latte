@@ -14,7 +14,7 @@ import numpy as np
 
 from einops import rearrange, repeat
 from timm.models.vision_transformer import Mlp, PatchEmbed
-from xtuner.parallel.sequence import get_sequence_parallel_world_size, split_for_sequence_parallel
+from xtuner.parallel.sequence import get_sequence_parallel_world_size, split_for_sequence_parallel, get_sequence_parallel_group
 
 import os
 import sys
@@ -37,7 +37,10 @@ def modulate(x, shift, scale):
 #               Attention Layers from TIMM                                      #
 #################################################################################
 
-from xtuner.parallel.sequence.attention import post_process_for_sequence_parallel_attn, pre_process_for_sequence_parallel_attn
+from xtuner.parallel.sequence import (
+    post_process_for_sequence_parallel_attn, pre_process_for_sequence_parallel_attn,
+    gather_forward_split_backward, get_sequence_parallel_group
+    )
 import torch.distributed as dist
 
 class Attention(nn.Module):
@@ -323,17 +326,14 @@ class Latte(nn.Module):
         x: (N, T, patch_size**2 * C)
         imgs: (N, H, W, C)
         """
-        seq_parallel_world_size = get_sequence_parallel_world_size()
         c = self.out_channels
         p = self.x_embedder.patch_size[0]
-        h = w = int((x.shape[1] * seq_parallel_world_size) ** 0.5)
-        assert h * w == x.shape[1] * seq_parallel_world_size
-        assert h % seq_parallel_world_size == 0
-        h_per_rank = h // seq_parallel_world_size
+        h = w = int(x.shape[1] ** 0.5)
+        assert h * w == x.shape[1]
 
-        x = x.reshape(shape=(x.shape[0], h_per_rank, w, p, p, c))
+        x = x.reshape(shape=(x.shape[0], h, w, p, p, c))
         x = torch.einsum('nhwpqc->nchpwq', x)
-        imgs = x.reshape(shape=(x.shape[0], c, h_per_rank * p, w * p))
+        imgs = x.reshape(shape=(x.shape[0], c, h * p, h * p))
         return imgs
 
     # @torch.cuda.amp.autocast()
@@ -357,11 +357,11 @@ class Latte(nn.Module):
         bs, seq_len, dim = x.shape
         seq_parallel_world_size = get_sequence_parallel_world_size()
         assert seq_len % seq_parallel_world_size == 0
-        x = split_for_sequence_parallel(x, split_dim=1)
+        x = split_for_sequence_parallel(x, get_sequence_parallel_group(), split_dim=1)
         t = self.t_embedder(t, use_fp16=use_fp16)           
         timestep_spatial = repeat(t, 'n d -> (n c) d', c=self.temp_embed.shape[1] + use_image_num)  # (1, num_frames, hidden_size)
         timestep_temp = repeat(t, 'n d -> (n c) d', c=self.pos_embed.shape[1]) 
-        timestep_temp = split_for_sequence_parallel(timestep_temp, split_dim=0)
+        timestep_temp = split_for_sequence_parallel(timestep_temp, get_sequence_parallel_group(), split_dim=0)
 
         if self.extras == 2:
             y = self.y_embedder(y, self.training)
@@ -424,7 +424,9 @@ class Latte(nn.Module):
             c = timestep_spatial + y_spatial
         else:
             c = timestep_spatial
-        x = self.final_layer(x, c)              
+        x = self.final_layer(x, c)    
+        # breakpoint()
+        x = gather_forward_split_backward(x, get_sequence_parallel_group(), dim=1, grad_scale="up")
         x = self.unpatchify(x)                  
         x = rearrange(x, '(b f) c h w -> b f c h w', b=batches)
         # print(x.shape)
