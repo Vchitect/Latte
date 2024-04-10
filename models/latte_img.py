@@ -19,7 +19,7 @@ from xtuner.parallel.sequence import (
     get_sequence_parallel_world_size, split_for_sequence_parallel, 
     get_sequence_parallel_group, gather_forward_split_backward,
     post_process_for_sequence_parallel_attn, pre_process_for_sequence_parallel_attn,
-    split_forward_gather_backward)
+    split_forward_gather_backward, all_to_all)
 
 import os
 import sys
@@ -57,24 +57,21 @@ class Attention(nn.Module):
         self.attn_drop = nn.Dropout(attn_drop)
         self.proj = nn.Linear(dim, dim)
         self.proj_drop = nn.Dropout(proj_drop)
-
+    
     def forward(self, x, use_sequence_parallel=True):
         B, N, C = x.shape
-        qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, C // self.num_heads)
-        q, k, v = qkv[:, :, 0], qkv[:, :, 1], qkv[:, :, 2]
-
-        # qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4).contiguous()
-        # q, k, v = qkv.unbind(0)   # make torchscript happy (cannot use tensor as tuple)
+        qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4).contiguous()
+        q, k, v = qkv.unbind(0)   # make torchscript happy (cannot use tensor as tuple)
 
         enable_sequence_parallel = (
             dist.is_initialized() and get_sequence_parallel_world_size() > 1
             and self.training and use_sequence_parallel)
         if enable_sequence_parallel:
-            q, k, v = pre_process_for_sequence_parallel_attn(q, k, v)
-        
-        q = q.transpose(1, 2).contiguous()  # bshd -> bhsd
-        k = k.transpose(1, 2).contiguous()
-        v = v.transpose(1, 2).contiguous()
+            # (bs, n_head, seq_len / p, dim) -> (bs, n_head / p, seq_len, dim)
+            sp_group = get_sequence_parallel_group()
+            q = all_to_all(q, sp_group, scatter_dim=1, gather_dim=2)
+            k = all_to_all(k, sp_group, scatter_dim=1, gather_dim=2)
+            v = all_to_all(v, sp_group, scatter_dim=1, gather_dim=2)
         
         if self.attention_mode == 'xformers': # cause loss nan while using with amp
             x = xformers.ops.memory_efficient_attention(q, k, v)
@@ -89,13 +86,15 @@ class Attention(nn.Module):
             attn = (q @ k.transpose(-2, -1)) * self.scale
             attn = attn.softmax(dim=-1)
             attn = self.attn_drop(attn)
-            x = (attn @ v).transpose(1, 2).contiguous()
+            x = (attn @ v).transpose(1, 2)
 
         else:
             raise NotImplemented
         
         if enable_sequence_parallel:
-            x = post_process_for_sequence_parallel_attn(x).contiguous()
+            # (bs, seq_len, n_head / p, dim) -> (bs, seq_len / p, n_head, dim)
+            sp_group = get_sequence_parallel_group()
+            x = all_to_all(x, sp_group, scatter_dim=1, gather_dim=2)
         
         x = x.reshape(B, N, C)
 
@@ -352,18 +351,15 @@ class Latte(nn.Module):
         batches, frames, channels, high, weight = x.shape 
         x = rearrange(x, 'b f c h w -> (b f) c h w')
         x = self.x_embedder(x) + self.pos_embed  
-        # print(f'before model x.shape = {x.shape}')
         bs, seq_len, dim = x.shape
         seq_parallel_world_size = get_sequence_parallel_world_size()
         assert seq_len % seq_parallel_world_size == 0
 
-        x = split_forward_gather_backward(x, get_sequence_parallel_group(), dim=1, grad_scale="down")
-        # x = split_for_sequence_parallel(x, get_sequence_parallel_group(), dim=1)
+        x = split_forward_gather_backward(x, dim=1, sp_group=get_sequence_parallel_group(), grad_scale="down")
         t = self.t_embedder(t, use_fp16=use_fp16)           
         timestep_spatial = repeat(t, 'n d -> (n c) d', c=self.temp_embed.shape[1] + use_image_num)  # (1, num_frames, hidden_size)
         timestep_temp = repeat(t, 'n d -> n c d', c=self.pos_embed.shape[1]) 
-        timestep_temp = split_forward_gather_backward(timestep_temp, get_sequence_parallel_group(), dim=1, grad_scale="down")
-        # timestep_temp = split_for_sequence_parallel(timestep_temp, get_sequence_parallel_group(), dim=1)
+        timestep_temp = split_forward_gather_backward(timestep_temp, dim=1, sp_group=get_sequence_parallel_group(), grad_scale="down")
         timestep_temp = timestep_temp.flatten(0, 1)
 
         if self.extras == 2:
@@ -428,11 +424,9 @@ class Latte(nn.Module):
         else:
             c = timestep_spatial
         x = self.final_layer(x, c)    
-        # breakpoint()
-        x = gather_forward_split_backward(x, get_sequence_parallel_group(), dim=1, grad_scale="up")
+        x = gather_forward_split_backward(x, dim=1, sp_group=get_sequence_parallel_group(), grad_scale="up")
         x = self.unpatchify(x)                  
         x = rearrange(x, '(b f) c h w -> b f c h w', b=batches)
-        # print(x.shape)
         return x
 
 
