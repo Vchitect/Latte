@@ -47,7 +47,7 @@ This repository contains:
 First, download and set up the repo:
 
 ```bash
-git clone https://github.com/maxin-cn/Latte.git
+git clone https://github.com/Vchitect/Latte
 cd Latte
 ```
 
