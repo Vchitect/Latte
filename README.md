@@ -1,8 +1,10 @@
 ## Latte: Latent Diffusion Transformer for Video Generation<br><sub>Official PyTorch Implementation</sub>
 
-### [Paper](https://arxiv.org/abs/2401.03048v1) | [Project Page](https://maxin-cn.github.io/latte_project/)
+<!-- ### [Paper](https://arxiv.org/abs/2401.03048v1) | [Project Page](https://maxin-cn.github.io/latte_project/) -->
 
-
+[![arXiv](https://img.shields.io/badge/arXiv-2401.03048-b31b1b.svg)](https://arxiv.org/abs/2401.03048)
+[![Project Page](https://img.shields.io/badge/Project-Website-green)](https://maxin-cn.github.io/latte_project/)
+[![HF Demo](https://img.shields.io/static/v1?label=Demo&message=OpenBayes%E8%B4%9D%E5%BC%8F%E8%AE%A1%E7%AE%97&color=green)](https://openbayes.com/console/public/tutorials/UOeU0ywVxl7) 
 
 This repo contains PyTorch model definitions, pre-trained weights, and training/sampling code for our paper exploring 
 latent diffusion models with transformers (Latte). You can find more visualizations on our [project page](https://maxin-cn.github.io/latte_project/).
@@ -29,6 +31,8 @@ This repository contains:
 * 🛸 A Latte [training script](train.py) using PyTorch DDP.
 
 ## News
+<!-- - (🔥 New) May. 2, 2024. 💥 The updated LatteT2V model is released. If you want to use the updated model to generate images directly, please make sure `video_length=1`, `enable_temporal_attentions=True` and `enable_vae_temporal_decoder=False` in [t2v_sample.yaml](configs/t2v/t2v_sample.yaml). -->
+
 - (🔥 New) Mar. 20, 2024. 💥 An updated LatteT2V model is coming soon, stay tuned!
 <div align="center">
     <img src="visuals/latte.gif" width="800">
