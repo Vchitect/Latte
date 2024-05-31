@@ -48,7 +48,8 @@ def main(args):
                                                   beta_start=args.beta_start, 
                                                   beta_end=args.beta_end, 
                                                   beta_schedule=args.beta_schedule,
-                                                  variance_type=args.variance_type)
+                                                  variance_type=args.variance_type,
+                                                  clip_sample=False)
     elif args.sample_method == 'EulerDiscrete':
         scheduler = EulerDiscreteScheduler.from_pretrained(args.pretrained_model_path, 
                                                         subfolder="scheduler",
@@ -62,7 +63,8 @@ def main(args):
                                                   beta_start=args.beta_start, 
                                                   beta_end=args.beta_end, 
                                                   beta_schedule=args.beta_schedule,
-                                                  variance_type=args.variance_type)
+                                                  variance_type=args.variance_type,
+                                                  clip_sample=False)
     elif args.sample_method == 'DPMSolverMultistep':
         scheduler = DPMSolverMultistepScheduler.from_pretrained(args.pretrained_model_path, 
                                                   subfolder="scheduler",
