@@ -24,7 +24,6 @@ We propose a novel Latent Diffusion Transformer, namely Latte, for video generat
 <div align="center">
     <img src="visuals/architecture.svg" width="650">
 </div>
--->
 
 This repository contains:
 
@@ -32,6 +31,7 @@ This repository contains:
 * ⚡️ **Pre-trained Latte models** trained on FaceForensics, SkyTimelapse, Taichi-HD and UCF101 (256x256). In addition, we provide a T2V checkpoint (512x512). All checkpoints can be found [here](https://huggingface.co/maxin-cn/Latte/tree/main). 
 
 * 🛸 A Latte [training script](train.py) using PyTorch DDP.
+-->
 
 ## News
 - (🔥 New) May. 23, 2024. 💥 **Latte-1** for Text-to-video generation is released! You can download pre-trained model [here](https://huggingface.co/maxin-cn/LatteT2V/tree/main/transformer_v2). Latte-1 also supports Text-to-image generation, please set `video_length=1`, `enable_temporal_attentions=True` and `enable_vae_temporal_decoder=False` in [t2v_sample.yaml](configs/t2v/t2v_sample.yaml).
