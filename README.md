@@ -34,18 +34,18 @@ This repository contains:
 -->
 
 ## News
-- (🔥 New) May. 23, 2024. 💥 **Latte-1** for Text-to-video generation is released! You can download pre-trained model [here](https://huggingface.co/maxin-cn/LatteT2V/tree/main/transformer_v2). Latte-1 also supports Text-to-image generation, please set `video_length=1`, `enable_temporal_attentions=True` and `enable_vae_temporal_decoder=False` in [t2v_sample.yaml](configs/t2v/t2v_sample.yaml).
+- (🔥 New) **May 23, 2024** 💥 **Latte-1** for Text-to-video generation is released! You can download pre-trained model [here](https://huggingface.co/maxin-cn/LatteT2V/tree/main/transformer_v2). Latte-1 also supports Text-to-image generation, please set `video_length=1`, `enable_temporal_attentions=True` and `enable_vae_temporal_decoder=False` in [t2v_sample.yaml](configs/t2v/t2v_sample.yaml).
 
 <div align="center">
     <img src="visuals/latteT2V.gif" width="800">
 </div>
 
-- (🔥 New) Feb. 24, 2024. 💥 We are very grateful that researchers and developers like our work. We will continue to update our LatteT2V model, hoping that our efforts can help the community develop. Our Latte discord channel <a href="https://discord.gg/RguYqhVU92" style="text-decoration:none;">
+- (🔥 New) **Feb 24, 2024** 💥 We are very grateful that researchers and developers like our work. We will continue to update our LatteT2V model, hoping that our efforts can help the community develop. Our Latte discord channel <a href="https://discord.gg/RguYqhVU92" style="text-decoration:none;">
 <img src="https://user-images.githubusercontent.com/25839884/218347213-c080267f-cbb6-443e-8532-8e1ed9a58ea9.png" width="3%" alt="" /></a> is created for discussions. Coders are welcome to contribute.
 
-- (🔥 New) Jan. 9, 2024. 💥 An updated LatteT2V model initialized with the [PixArt-α](https://github.com/PixArt-alpha/PixArt-alpha) is released, the checkpoint can be found [here](https://huggingface.co/maxin-cn/LatteT2V/tree/main/transformer).
+- (🔥 New) **Jan 9, 2024** 💥 An updated LatteT2V model initialized with the [PixArt-α](https://github.com/PixArt-alpha/PixArt-alpha) is released, the checkpoint can be found [here](https://huggingface.co/maxin-cn/LatteT2V/tree/main/transformer).
 
-- (🔥 New) Oct. 31, 2023. 💥 The training and inference code is released. All checkpoints (including FaceForensics, SkyTimelapse, UCF101, and Taichi-HD) can be found [here](https://huggingface.co/maxin-cn/Latte/tree/main). In addition, the LatteT2V inference code is provided.
+- (🔥 New) **Oct 31, 2023** 💥 The training and inference code is released. All checkpoints (including FaceForensics, SkyTimelapse, UCF101, and Taichi-HD) can be found [here](https://huggingface.co/maxin-cn/Latte/tree/main). In addition, the LatteT2V inference code is provided.
 
 
 ## Setup
