@@ -27,8 +27,6 @@ def main(args):
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     transformer_model = get_models(args).to(device, dtype=torch.float16)
-    state_dict = find_model(args.ckpt)
-    transformer_model.load_state_dict(state_dict)
     
     if args.enable_vae_temporal_decoder:
         vae = AutoencoderKLTemporalDecoder.from_pretrained(args.pretrained_model_path, subfolder="vae_temporal_decoder", torch_dtype=torch.float16).to(device)
