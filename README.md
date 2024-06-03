@@ -32,7 +32,7 @@ This repository contains:
 * 🛸 A Latte [training script](train.py) using PyTorch DDP.
 
 ## News
-- (🔥 New) May. 23, 2024. 💥 The updated LatteT2V model is released at [here](https://huggingface.co/maxin-cn/Latte/blob/main/t2v_v20240523.pt). If you want to use the updated model to generate images directly, please make sure `video_length=1`, `enable_temporal_attentions=True` and `enable_vae_temporal_decoder=False` in [t2v_sample.yaml](configs/t2v/t2v_sample.yaml).
+- (🔥 New) May. 23, 2024. 💥 The updated LatteT2V model is released at [here](https://huggingface.co/maxin-cn/LatteT2V/tree/main/transformer_v2). If you want to use the updated model to generate images directly, please make sure `video_length=1`, `enable_temporal_attentions=True` and `enable_vae_temporal_decoder=False` in [t2v_sample.yaml](configs/t2v/t2v_sample.yaml).
 
 - (🔥 New) Mar. 20, 2024. 💥 An updated LatteT2V model is coming soon, stay tuned!
 <div align="center">
@@ -42,7 +42,7 @@ This repository contains:
 - (🔥 New) Feb. 24, 2024. 💥 We are very grateful that researchers and developers like our work. We will continue to update our LatteT2V model, hoping that our efforts can help the community develop. Our Latte discord channel <a href="https://discord.gg/RguYqhVU92" style="text-decoration:none;">
 <img src="https://user-images.githubusercontent.com/25839884/218347213-c080267f-cbb6-443e-8532-8e1ed9a58ea9.png" width="3%" alt="" /></a> is created for discussions. Coders are welcome to contribute.
 
-- (🔥 New) Jan. 9, 2024. 💥 An updated LatteT2V model initialized with the [PixArt-α](https://github.com/PixArt-alpha/PixArt-alpha) is released, the checkpoint can be found [here](https://huggingface.co/maxin-cn/Latte/resolve/main/t2v.pt?download=true).
+- (🔥 New) Jan. 9, 2024. 💥 An updated LatteT2V model initialized with the [PixArt-α](https://github.com/PixArt-alpha/PixArt-alpha) is released, the checkpoint can be found [here](https://huggingface.co/maxin-cn/LatteT2V/tree/main/transformer).
 
 - (🔥 New) Oct. 31, 2023. 💥 The training and inference code is released. All checkpoints (including FaceForensics, SkyTimelapse, UCF101, and Taichi-HD) can be found [here](https://huggingface.co/maxin-cn/Latte/tree/main). In addition, the LatteT2V inference code is provided.
 
@@ -79,7 +79,7 @@ or if you want to sample hundreds of videos, you can use the following script wi
 bash sample/ffs_ddp.sh
 ```
 
-If you want to try generating videos from text, please download [`t2v_required_models`](https://huggingface.co/maxin-cn/Latte/tree/main/t2v_required_models) and run `bash sample/t2v.sh`.
+If you want to try generating videos from text, just run `bash sample/t2v.sh`. All related checkpoints will download automatically.
 
 ## Training
 
