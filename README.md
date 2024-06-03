@@ -32,11 +32,10 @@ This repository contains:
 * 🛸 A Latte [training script](train.py) using PyTorch DDP.
 
 ## News
-- (🔥 New) May. 23, 2024. 💥 The updated LatteT2V model is released at [here](https://huggingface.co/maxin-cn/LatteT2V/tree/main/transformer_v2). If you want to use the updated model to generate images directly, please make sure `video_length=1`, `enable_temporal_attentions=True` and `enable_vae_temporal_decoder=False` in [t2v_sample.yaml](configs/t2v/t2v_sample.yaml).
+- (🔥 New) May. 23, 2024. 💥 Latte-1 for T2V is released! You can download pre-trained model [here](https://huggingface.co/maxin-cn/LatteT2V/tree/main/transformer_v2). Latte-1 also supports Text-to-image generation, please set `video_length=1`, `enable_temporal_attentions=True` and `enable_vae_temporal_decoder=False` in [t2v_sample.yaml](configs/t2v/t2v_sample.yaml).
 
-- (🔥 New) Mar. 20, 2024. 💥 An updated LatteT2V model is coming soon, stay tuned!
 <div align="center">
-    <img src="visuals/latte.gif" width="800">
+    <img src="visuals/latteT2V.gif" width="800">
 </div>
 
 - (🔥 New) Feb. 24, 2024. 💥 We are very grateful that researchers and developers like our work. We will continue to update our LatteT2V model, hoping that our efforts can help the community develop. Our Latte discord channel <a href="https://discord.gg/RguYqhVU92" style="text-decoration:none;">
