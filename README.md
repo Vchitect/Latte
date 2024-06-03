@@ -34,7 +34,8 @@ This repository contains:
 -->
 
 ## News
-- (🔥 New) **May 23, 2024** 💥 **Latte-1** for Text-to-video generation is released! You can download pre-trained model [here](https://huggingface.co/maxin-cn/LatteT2V/tree/main/transformer_v2). Latte-1 also supports Text-to-image generation, please set `video_length=1`, `enable_temporal_attentions=True` and `enable_vae_temporal_decoder=False` in [t2v_sample.yaml](configs/t2v/t2v_sample.yaml).
+- (🔥 New) **May 23, 2024** 💥
+  **Latte-1** for Text-to-video generation is released! You can download pre-trained model [here](https://huggingface.co/maxin-cn/LatteT2V/tree/main/transformer_v2). Latte-1 also supports Text-to-image generation, please set `video_length=1`, `enable_temporal_attentions=True` and `enable_vae_temporal_decoder=False` in [t2v_sample.yaml](configs/t2v/t2v_sample.yaml).
 
 <div align="center">
     <img src="visuals/latteT2V.gif" width="800">
