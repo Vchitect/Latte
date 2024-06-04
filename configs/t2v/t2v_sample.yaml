@@ -4,8 +4,8 @@ save_img_path: "./sample_videos/t2v-"
 pretrained_model_path: "/mnt/hwfile/gcc/maxin/work/pretrained/Latte"
 
 # model config: 
-# LatteT2V-V1: the first released version
-# LatteT2V-V2: the second version with better performance (released on May. 23, 2024)
+# LatteT2V-V0: the first released version
+# LatteT2V-V1: the second version with better performance (released on May. 23, 2024)
 model: LatteT2V-V1 # [LatteT2V-V1 or LatteT2V-V2]
 video_length: 16
 image_size: [512, 512]

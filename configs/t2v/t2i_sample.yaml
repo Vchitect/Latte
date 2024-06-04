@@ -4,8 +4,8 @@ save_img_path: "./sample_videos/t2i-"
 pretrained_model_path: "/mnt/hwfile/gcc/maxin/work/pretrained/Latte"
 
 # model config: 
-# LatteT2V-V1: the first released version
-# LatteT2V-V2: the second version with better performance (released on May. 23, 2024)
+# LatteT2V-V0: the first released version
+# LatteT2V-V1: the second version with better performance (released on May. 23, 2024)
 model: LatteT2V-V1 # [LatteT2V-V1 or LatteT2V-V2]
 video_length: 1
 image_size: [512, 512]
@@ -25,7 +25,7 @@ run_time: 0
 guidance_scale: 7.5
 sample_method: 'DDIM'
 num_sampling_steps: 50
-enable_temporal_attentions: True # LatteT2V-V1: set to False; LatteT2V-V2: set to True
+enable_temporal_attentions: True # LatteT2V-V0: set to False; LatteT2V-V1: set to True
 enable_vae_temporal_decoder: False
 
 text_prompt: [

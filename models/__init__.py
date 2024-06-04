@@ -37,10 +37,10 @@ def get_models(args):
                 learn_sigma=args.learn_sigma,
                 extras=args.extras
             )
+    elif 'LatteT2V-V0' in args.model:
+        return LatteT2V.from_pretrained(args.pretrained_model_path, subfolder="transformer_v0", video_length=args.video_length)
     elif 'LatteT2V-V1' in args.model:
-        return LatteT2V.from_pretrained(args.pretrained_model_path, subfolder="transformer", video_length=args.video_length)
-    elif 'LatteT2V-V2' in args.model:
-        return LatteT2V.from_pretrained(args.pretrained_model_path, subfolder="transformer_2", video_length=args.video_length)
+        return LatteT2V.from_pretrained(args.pretrained_model_path, subfolder="transformer_v1", video_length=args.video_length)
     elif 'Latte' in args.model:
         return Latte_models[args.model](
                 input_size=args.latent_size,
