@@ -19,3 +19,5 @@ dependencies:
     - decord
     - pandas
     - imageio-ffmpeg
+    - sentencepiece
+    - beautifulsoup4

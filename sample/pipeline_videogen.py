@@ -262,9 +262,6 @@ class VideoGenPipeline(DiffusionPipeline):
         else:
             negative_prompt_embeds = None
 
-        # print(prompt_embeds.shape) # 1 120 4096
-        # print(negative_prompt_embeds.shape) # 1 120 4096
-
         # Perform additional masking.
         if mask_feature and not embeds_initially_provided:
             prompt_embeds = prompt_embeds.unsqueeze(1)
