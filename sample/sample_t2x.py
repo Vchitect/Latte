@@ -15,7 +15,6 @@ from transformers import T5EncoderModel, T5Tokenizer
 
 import os, sys
 sys.path.append(os.path.split(sys.path[0])[0])
-from download import find_model
 from pipeline_videogen import VideoGenPipeline
 from models import get_models
 from utils import save_video_grid

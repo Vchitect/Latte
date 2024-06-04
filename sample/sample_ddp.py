@@ -16,7 +16,7 @@ import sys
 import torch
 sys.path.append(os.path.split(sys.path[0])[0])
 import torch.distributed as dist
-from download import find_model
+from utils import find_model
 from diffusion import create_diffusion
 from diffusers.models import AutoencoderKL
 from tqdm import tqdm
