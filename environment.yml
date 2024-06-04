@@ -19,3 +19,4 @@ dependencies:
     - decord
     - pandas
     - imageio-ffmpeg
+    - sentencepiece
