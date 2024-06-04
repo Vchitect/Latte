@@ -1,5 +1,5 @@
 # path:
-save_img_path: "./sample_videos/t2v-"
+save_img_path: "./sample_videos/t2i-"
 # pretrained_model_path: "maxin-cn/LatteT2V"
 pretrained_model_path: "/mnt/hwfile/gcc/maxin/work/pretrained/Latte"
 
@@ -7,7 +7,7 @@ pretrained_model_path: "/mnt/hwfile/gcc/maxin/work/pretrained/Latte"
 # LatteT2V-V1: the first released version
 # LatteT2V-V2: the second version with better performance (released on May. 23, 2024)
 model: LatteT2V-V1 # [LatteT2V-V1 or LatteT2V-V2]
-video_length: 16
+video_length: 1
 image_size: [512, 512]
 # # beta schedule
 beta_start: 0.0001
@@ -25,8 +25,8 @@ run_time: 0
 guidance_scale: 7.5
 sample_method: 'DDIM'
 num_sampling_steps: 50
-enable_temporal_attentions: True
-enable_vae_temporal_decoder: True # use temporal vae decoder from SVD, maybe reduce the video flicker (It's not widely tested)
+enable_temporal_attentions: True # LatteT2V-V1: set to False; LatteT2V-V2: set to True
+enable_vae_temporal_decoder: False
 
 text_prompt: [
               'Yellow and black tropical fish dart through the sea.',

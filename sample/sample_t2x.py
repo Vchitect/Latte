@@ -20,6 +20,7 @@ from pipeline_videogen import VideoGenPipeline
 from models import get_models
 from utils import save_video_grid
 import imageio
+from torchvision.utils import save_image
 
 def main(args):
     # torch.manual_seed(args.seed)
@@ -124,8 +125,8 @@ def main(args):
     if not os.path.exists(args.save_img_path):
         os.makedirs(args.save_img_path)
 
-    video_grids = []
-    for prompt in args.text_prompt:
+    # video_grids = []
+    for num_prompt, prompt in enumerate(args.text_prompt):
         print('Processing the ({}) prompt'.format(prompt))
         videos = videogen_pipeline(prompt, 
                                 video_length=args.video_length, 
@@ -138,18 +139,27 @@ def main(args):
                                 mask_feature=True,
                                 enable_vae_temporal_decoder=args.enable_vae_temporal_decoder
                                 ).video
-        try:
-            imageio.mimwrite(args.save_img_path + prompt.replace(' ', '_') + '_%04d' % args.run_time + 'webv-imageio.mp4', videos[0], fps=8, quality=9) # highest quality is 10, lowest is 0
-        except:
-            print('Error when saving {}'.format(prompt))
-        video_grids.append(videos)
-    video_grids = torch.cat(video_grids, dim=0)
+        if videos.shape[1] == 1:
+            try:
+                save_image(videos[0][0], args.save_img_path + prompt.replace(' ', '_') + '.png')
+            except:
+                save_image(videos[0][0], args.save_img_path + str(num_prompt)+ '.png')
+                print('Error when saving {}'.format(prompt))
+        else:
+            try:
+                imageio.mimwrite(args.save_img_path + prompt.replace(' ', '_') + '_%04d' % args.run_time + '.mp4', videos[0], fps=8, quality=9) # highest quality is 10, lowest is 0
+            except:
+                print('Error when saving {}'.format(prompt))
+            # save video grid
+    #         video_grids.append(videos)
+            
+    # video_grids = torch.cat(video_grids, dim=0)
 
-    video_grids = save_video_grid(video_grids)
+    # video_grids = save_video_grid(video_grids)
 
-    # torchvision.io.write_video(args.save_img_path + '_%04d' % args.run_time + '-.mp4', video_grids, fps=6)
-    imageio.mimwrite(args.save_img_path + '_%04d' % args.run_time + '-.mp4', video_grids, fps=8, quality=5)
-    print('save path {}'.format(args.save_img_path))
+    # # torchvision.io.write_video(args.save_img_path + '_%04d' % args.run_time + '-.mp4', video_grids, fps=6)
+    # imageio.mimwrite(args.save_img_path + '_%04d' % args.run_time + '-.mp4', video_grids, fps=8, quality=6)
+    # print('save path {}'.format(args.save_img_path))
 
     # save_videos_grid(video, f"./{prompt}.gif")
 

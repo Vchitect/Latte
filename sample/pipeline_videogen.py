@@ -734,10 +734,13 @@ class VideoGenPipeline(DiffusionPipeline):
                         callback(step_idx, t, latents)
 
         if not output_type == 'latents':
-            if enable_vae_temporal_decoder:
-                video = self.decode_latents_with_temporal_decoder(latents)
-            else:
-                video = self.decode_latents(latents)
+            if latents.shape[2] == 1: # image
+                video = self.decode_latents_image(latents)
+            else: # video
+                if enable_vae_temporal_decoder:
+                    video = self.decode_latents_with_temporal_decoder(latents)
+                else:
+                    video = self.decode_latents(latents)
         else:
             video = latents
             return VideoPipelineOutput(video=video)
@@ -749,6 +752,19 @@ class VideoGenPipeline(DiffusionPipeline):
             return (video,)
 
         return VideoPipelineOutput(video=video)
+    
+    def decode_latents_image(self, latents):
+        video_length = latents.shape[2]
+        latents = 1 / self.vae.config.scaling_factor * latents
+        latents = einops.rearrange(latents, "b c f h w -> (b f) c h w")
+        video = []
+        for frame_idx in range(latents.shape[0]):
+            video.append(self.vae.decode(
+                latents[frame_idx:frame_idx+1]).sample)
+        video = torch.cat(video)
+        video = einops.rearrange(video, "(b f) c h w -> b f c h w", f=video_length)
+        video = (video / 2.0 + 0.5).clamp(0, 1)
+        return video
     
     def decode_latents(self, latents):
         video_length = latents.shape[2]

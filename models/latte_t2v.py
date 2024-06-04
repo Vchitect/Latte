@@ -891,7 +891,7 @@ class LatteT2V(ModelMixin, ConfigMixin):
                         hidden_states = rearrange(hidden_states, '(b t) f d -> (b f) t d', b=input_batch_size).contiguous()
 
                     else:
-                        if i == 0:
+                        if i == 0 and frame > 1:
                             hidden_states = hidden_states + self.temp_pos_embed
                         
                         hidden_states = temp_block(
