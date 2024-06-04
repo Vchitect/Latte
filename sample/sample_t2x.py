@@ -15,7 +15,7 @@ from transformers import T5EncoderModel, T5Tokenizer
 
 import os, sys
 sys.path.append(os.path.split(sys.path[0])[0])
-from pipeline_videogen import VideoGenPipeline
+from pipeline_latte import LattePipeline
 from models import get_models
 from utils import save_video_grid
 import imageio
@@ -114,7 +114,7 @@ def main(args):
                                                   variance_type=args.variance_type)
 
 
-    videogen_pipeline = VideoGenPipeline(vae=vae, 
+    videogen_pipeline = LattePipeline(vae=vae, 
                                  text_encoder=text_encoder, 
                                  tokenizer=tokenizer, 
                                  scheduler=scheduler, 

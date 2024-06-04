@@ -68,7 +68,7 @@ class VideoPipelineOutput(BaseOutput):
     video: torch.Tensor
 
 
-class VideoGenPipeline(DiffusionPipeline):
+class LattePipeline(DiffusionPipeline):
     r"""
     Pipeline for text-to-image generation using PixArt-Alpha.
 
