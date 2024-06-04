@@ -21,3 +21,4 @@ dependencies:
     - imageio-ffmpeg
     - sentencepiece
     - beautifulsoup4
+    - ftfy
