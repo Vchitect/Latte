@@ -15,10 +15,6 @@ import numpy as np
 from einops import rearrange, repeat
 from timm.models.vision_transformer import Mlp, PatchEmbed
 
-
-# for i in sys.path:
-#     print(i)
-
 # the xformers lib allows less memory, faster training and inference
 try:
     import xformers
