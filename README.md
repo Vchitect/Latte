@@ -34,11 +34,10 @@ This repository contains:
 -->
 
 ## News
-- (🔥 New) **May 23, 2024** 💥
-  **Latte-1** is released! Pre-trained model can be downloaded [here](https://huggingface.co/maxin-cn/Latte-1/tree/main/transformer). **We support both T2V and T2I**. Please run `bash sample/t2v.sh` and `bash sample/t2i.sh` respectively.
+- (🔥 New) **May 23, 2024** 💥 **Latte-1** is released! Pre-trained model can be downloaded [here](https://huggingface.co/maxin-cn/Latte-1/tree/main/transformer). **We support both T2V and T2I**. Please run `bash sample/t2v.sh` and `bash sample/t2i.sh` respectively.
 
 <div align="center">
-    <img src="visuals/latteT2V.gif" width="800">
+    <img src="visuals/latteT2V.gif" width=80%>
 </div>
 
 - (🔥 New) **Feb 24, 2024** 💥 We are very grateful that researchers and developers like our work. We will continue to update our LatteT2V model, hoping that our efforts can help the community develop. Our Latte discord channel <a href="https://discord.gg/RguYqhVU92" style="text-decoration:none;">
