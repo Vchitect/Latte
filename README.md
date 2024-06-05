@@ -36,7 +36,9 @@ This repository contains:
 ## News
 - (🔥 New) **May 23, 2024** 💥
   
-  **Latte-1** is released! Pre-trained model can be downloaded [here](https://huggingface.co/maxin-cn/LatteT2V/tree/main/transformer_v1). Latte-1 also supports Text-to-image generation, please run `bash sample/t2i.sh`.
+  **Latte-1** is released! Pre-trained model can be downloaded [here](https://huggingface.co/maxin-cn/LatteT2V/tree/main/transformer_v1).
+
+  Latte-1 supports both T2V and T2I. Please run `bash sample/t2v.sh` and `bash sample/t2i.sh`.
 
 <div align="center">
     <img src="visuals/latteT2V.gif" width="800">
