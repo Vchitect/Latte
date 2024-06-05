@@ -3,9 +3,9 @@ save_img_path: "./sample_videos/t2i-"
 pretrained_model_path: "maxin-cn/LatteT2V"
 
 # model config: 
-# LatteT2V-V0: the first released version
-# LatteT2V-V1: the second version with better performance (released on May. 23, 2024)
-model: LatteT2V-V1 # [LatteT2V-V1 or LatteT2V-V2]
+# maxin-cn/Latte-0: the first released version
+# maxin-cn/Latte-1: the second version with better performance (released on May. 23, 2024)
+model: LatteT2V
 video_length: 1
 image_size: [512, 512]
 # # beta schedule

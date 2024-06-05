@@ -210,7 +210,7 @@ class BasicTransformerBlock_(nn.Module):
         elif self.use_ada_layer_norm_zero:
             self.norm1 = AdaLayerNormZero(dim, num_embeds_ada_norm)
         else:
-            self.norm1 = nn.LayerNorm(dim, elementwise_affine=norm_elementwise_affine, eps=norm_eps)
+            self.norm1 = nn.LayerNorm(dim, elementwise_affine=norm_elementwise_affine, eps=norm_eps) # go here
 
         self.attn1 = Attention(
             query_dim=dim,
@@ -291,7 +291,7 @@ class BasicTransformerBlock_(nn.Module):
             )
         elif self.use_layer_norm:
             norm_hidden_states = self.norm1(hidden_states)
-        elif self.use_ada_layer_norm_single:
+        elif self.use_ada_layer_norm_single: # go here
             shift_msa, scale_msa, gate_msa, shift_mlp, scale_mlp, gate_mlp = (
                 self.scale_shift_table[None] + timestep.reshape(batch_size, 6, -1)
             ).chunk(6, dim=1)
