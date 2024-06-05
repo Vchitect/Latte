@@ -35,7 +35,7 @@ This repository contains:
 
 ## News
 - (🔥 New) **May 23, 2024** 💥
-  **Latte-1** for Text-to-video generation is released! You can download pre-trained model [here](https://huggingface.co/maxin-cn/Latte-1/tree/main/transformer). Latte-1 also supports Text-to-image generation, please run `bash sample/t2i.sh`.
+  **Latte-1** for Text-to-video generation is released! You can download pre-trained model [here](https://huggingface.co/maxin-cn/LatteT2V/tree/main/transformer_v1). Latte-1 also supports Text-to-image generation, please run `bash sample/t2i.sh`.
 
 <div align="center">
     <img src="visuals/latteT2V.gif" width="800">
