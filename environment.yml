@@ -22,3 +22,4 @@ dependencies:
     - sentencepiece
     - beautifulsoup4
     - ftfy
+    - omegaconf
