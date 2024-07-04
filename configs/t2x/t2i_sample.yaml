@@ -1,6 +1,6 @@
 # path:
 save_img_path: "./sample_videos/t2i-"
-pretrained_model_path: "maxin-cn/LatteT2V"
+pretrained_model_path: "maxin-cn/Latte-1"
 
 # model config: 
 # maxin-cn/Latte-0: the first released version
