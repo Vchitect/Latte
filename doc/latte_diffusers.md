@@ -20,7 +20,7 @@ video_length = 1
 pipe = LattePipeline.from_pretrained("maxin-cn/Latte-1", torch_dtype=torch.float16).to(device)
 
 # if you want to use the temporal decoder of VAE, please uncomment the following codes
-# vae = AutoencoderKLTemporalDecoder.from_pretrained("/mnt/hwfile/gcc/maxin/work/pretrained/Latte/", subfolder="vae_temporal_decoder", torch_dtype=torch.float16).to(device)
+# vae = AutoencoderKLTemporalDecoder.from_pretrained("maxin-cn/Latte-1", subfolder="vae_temporal_decoder", torch_dtype=torch.float16).to(device)
 # pipe.vae = vae
 
 prompt = "a cat wearing sunglasses and working as a lifeguard at pool."
