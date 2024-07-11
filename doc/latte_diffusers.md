@@ -1,6 +1,6 @@
 ## Requirements
 
-Please follow [README](../README.md) to install the environment. After installation, update the version of diffusers at leaset to 0.30.0.
+Please follow [README](../README.md) to install the environment. After installation, update the version of `diffusers` at leaset to 0.30.0.
 
 ## Inference
 
