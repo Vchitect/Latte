@@ -33,7 +33,7 @@ This repository contains:
 * 🛸 A Latte [training script](train.py) using PyTorch DDP.
 -->
 
-<video controls loop src="https://github.com/Vchitect/Latte/assets/7929326/70bb0cbc-f8d0-4e19-adf8-b8951a143470" type="video/mp4"></video>
+<video controls loop src="https://github.com/Vchitect/Latte/assets/7929326/a650cd84-2378-4303-822b-56a441e1733b" type="video/mp4"></video>
 
 ## News
 - (🔥 New) **Jul 11, 2024** 💥 **Latte-1** is now integrated into [diffusers](https://github.com/huggingface/diffusers/blob/main/src/diffusers/models/transformers/latte_transformer_3d.py). You can easily run Latte using following code. We also support inference with 4/8-bit quantization, which can reduce GPU memory from 17 GB to 9 GB. Please refer to this [tutorial](docs/latte_diffusers.md) for more information.
