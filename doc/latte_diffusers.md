@@ -16,7 +16,7 @@ import imageio
 torch.manual_seed(0)
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-video_length = 1
+video_length = 1 # 1 or 16
 pipe = LattePipeline.from_pretrained("maxin-cn/Latte-1", torch_dtype=torch.float16).to(device)
 
 # if you want to use the temporal decoder of VAE, please uncomment the following codes
