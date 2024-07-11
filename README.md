@@ -33,14 +33,47 @@ This repository contains:
 * 🛸 A Latte [training script](train.py) using PyTorch DDP.
 -->
 
+<video controls loop src="https://github.com/Vchitect/Latte/assets/7929326/70bb0cbc-f8d0-4e19-adf8-b8951a143470" type="video/mp4"></video>
+
 ## News
-- (🔥 New) **Jul 11, 2024** 💥 Latte is integrated into [diffusers](https://github.com/huggingface/diffusers/blob/main/src/diffusers/models/transformers/latte_transformer_3d.py). Now you can conveniently use Latte according to this [document](docs/latte_diffusers.md).
+- (🔥 New) **Jul 11, 2024** 💥 **Latte-1** is now integrated into [diffusers](https://github.com/huggingface/diffusers/blob/main/src/diffusers/models/transformers/latte_transformer_3d.py). You can easily run Latte using following code. We also support inference with 4/8-bit quantization, which can reduce GPU memory from 17 GB to 9 GB. Please refer to this [tutorial](docs/latte_diffusers.md) for more information.
+
+```
+from diffusers import LattePipeline
+from diffusers.models import AutoencoderKLTemporalDecoder
+from torchvision.utils import save_image
+import torch
+import imageio
+
+torch.manual_seed(0)
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+video_length = 1 # 1 or 16
+pipe = LattePipeline.from_pretrained("maxin-cn/Latte-1", torch_dtype=torch.float16).to(device)
+
+# Using temporal decoder of VAE
+vae = AutoencoderKLTemporalDecoder.from_pretrained("maxin-cn/Latte-1", subfolder="vae_temporal_decoder", torch_dtype=torch.float16).to(device)
+pipe.vae = vae
+
+prompt = "a cat wearing sunglasses and working as a lifeguard at pool."
+videos = pipe(prompt, video_length=video_length, output_type='pt').frames.cpu()
+
+# text-to-video generation
+if video_length > 1:
+    videos = (videos.clamp(0, 1) * 255).to(dtype=torch.uint8) # convert to uint8
+    imageio.mimwrite('./latte_output.mp4', videos[0].permute(0, 2, 3, 1), fps=8, quality=5) # highest quality is 10, lowest is 0
+# text-to-image generation
+else:
+    save_image(videos[0], './latte_output.png')
+```
 
 - (🔥 New) **May 23, 2024** 💥 **Latte-1** is released! Pre-trained model can be downloaded [here](https://huggingface.co/maxin-cn/Latte-1/tree/main/transformer). **We support both T2V and T2I**. Please run `bash sample/t2v.sh` and `bash sample/t2i.sh` respectively.
 
+<!--
 <div align="center">
     <img src="visuals/latteT2V.gif" width=88%>
 </div>
+-->
 
 - (🔥 New) **Feb 24, 2024** 💥 We are very grateful that researchers and developers like our work. We will continue to update our LatteT2V model, hoping that our efforts can help the community develop. Our Latte discord channel <a href="https://discord.gg/RguYqhVU92" style="text-decoration:none;">
 <img src="https://user-images.githubusercontent.com/25839884/218347213-c080267f-cbb6-443e-8532-8e1ed9a58ea9.png" width="3%" alt="" /></a> is created for discussions. Coders are welcome to contribute.
