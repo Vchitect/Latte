@@ -7,7 +7,7 @@
 [![Project Page](https://img.shields.io/badge/Project-Website-blue)](https://maxin-cn.github.io/latte_project/)
 [![HF Demo](https://img.shields.io/static/v1?label=Demo&message=OpenBayes%E8%B4%9D%E5%BC%8F%E8%AE%A1%E7%AE%97&color=green)](https://openbayes.com/console/public/tutorials/UOeU0ywVxl7) 
 
-This repo contains PyTorch model definitions, pre-trained weights, and training/sampling code for our paper exploring 
+This repo contains PyTorch model definitions, pre-trained weights, training/sampling code and evaluation code for our paper exploring 
 latent diffusion models with transformers (Latte). You can find more visualizations on our [project page](https://maxin-cn.github.io/latte_project/).
 
 > [**Latte: Latent Diffusion Transformer for Video Generation**](https://maxin-cn.github.io/latte_project/)<br>

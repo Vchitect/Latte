@@ -115,7 +115,7 @@ def is50k(opts):
 @register_metric
 def fvd2048_16f(opts):
     opts.dataset_kwargs.update(max_size=None, xflip=False)
-    fvd = frechet_video_distance.compute_fvd(opts, max_real=20480, num_gen=20480, num_frames=16)
+    fvd = frechet_video_distance.compute_fvd(opts, max_real=2048, num_gen=2048, num_frames=16)
     return dict(fvd2048_16f=fvd)
 
 @register_metric
