@@ -84,9 +84,11 @@ bash sample/ffs_ddp.sh
 
 If you want to try generating videos from text, just run `bash sample/t2v.sh`. All related checkpoints will download automatically.
 
+If you would like to measure the quantitative metrics of your generated results, please refer to [here](docs/datasets_evaluation.md).
+
 ## Training
 
-We provide a training script for Latte in [`train.py`](train.py). This script can be used to train class-conditional and unconditional
+We provide a training script for Latte in [`train.py`](train.py). The structure of the datasets can be found [here](docs/datasets_evaluation.md). This script can be used to train class-conditional and unconditional
 Latte models. To launch Latte (256x256) training with `N` GPUs on the FaceForensics dataset 
 :
 
