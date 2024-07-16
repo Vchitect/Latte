@@ -17,25 +17,7 @@ from urllib.parse import urlparse
 import numpy as np
 import torch
 from tools import dnnlib
-# from src.training.dataset import video_to_image_dataset_kwargs
-
-#----------------------------------------------------------------------------
-
-def video_to_image_dataset_kwargs(video_dataset_kwargs: dnnlib.EasyDict) -> dnnlib.EasyDict:
-    """Converts video dataset kwargs to image dataset kwargs"""
-    return dnnlib.EasyDict(
-        class_name='training.dataset.ImageFolderDataset',
-        path=video_dataset_kwargs.path,
-        use_labels=video_dataset_kwargs.use_labels,
-        xflip=video_dataset_kwargs.xflip,
-        resolution=video_dataset_kwargs.resolution,
-        random_seed=video_dataset_kwargs.get('random_seed'),
-        # Explicitly ignoring the max size, since we are now interested
-        # in the number of images instead of the number of videos
-        # max_size=video_dataset_kwargs.max_size,
-    )
-
-#----------------------------------------------------------------------------
+from tools.utils.dataset import video_to_image_dataset_kwargs
 
 #----------------------------------------------------------------------------
 
