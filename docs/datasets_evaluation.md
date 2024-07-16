@@ -1,6 +1,6 @@
 ## Download datasets
 
-Here are the links to download the datasets [FaceForensics](https://huggingface.co/datasets/maxin-cn/FaceForensics), [SkyTimelapse](https://drive.usercontent.google.com/download?id=1xWLiU-MBGN7MrsFHQm4_yXmfHBsMbJQo&export=download&authuser=0), [UCF101](https://www.crcv.ucf.edu/data/UCF101/UCF101.rar), and [Taichi-HD](https://huggingface.co/datasets/maxin-cn/Taichi-HD).
+Here are the links to download the datasets [FaceForensics](https://huggingface.co/datasets/maxin-cn/FaceForensics), [SkyTimelapse](https://huggingface.co/datasets/maxin-cn/SkyTimelapse/tree/main), [UCF101](https://www.crcv.ucf.edu/data/UCF101/UCF101.rar), and [Taichi-HD](https://huggingface.co/datasets/maxin-cn/Taichi-HD).
 
 
 ## Dataset structure
