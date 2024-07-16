@@ -11,9 +11,13 @@ import math
 import torch
 import torch.nn as nn
 import numpy as np
+import torch.distributed as dist
 
 from einops import rearrange, repeat
 from timm.models.vision_transformer import Mlp, PatchEmbed
+from xtuner.parallel.sequence import (
+    get_sequence_parallel_world_size, get_sequence_parallel_group, 
+    gather_forward_split_backward, split_forward_gather_backward, all_to_all)
 
 import os
 import sys
@@ -51,29 +55,46 @@ class Attention(nn.Module):
         self.attn_drop = nn.Dropout(attn_drop)
         self.proj = nn.Linear(dim, dim)
         self.proj_drop = nn.Dropout(proj_drop)
-
-    def forward(self, x):
+    
+    def forward(self, x, use_sequence_parallel=True):
         B, N, C = x.shape
         qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4).contiguous()
         q, k, v = qkv.unbind(0)   # make torchscript happy (cannot use tensor as tuple)
+
+        enable_sequence_parallel = (
+            dist.is_initialized() and get_sequence_parallel_world_size() > 1
+            and self.training and use_sequence_parallel)
+        if enable_sequence_parallel:
+            # (bs, n_head, seq_len / p, dim) -> (bs, n_head / p, seq_len, dim)
+            sp_group = get_sequence_parallel_group()
+            q = all_to_all(q, sp_group, scatter_dim=1, gather_dim=2)
+            k = all_to_all(k, sp_group, scatter_dim=1, gather_dim=2)
+            v = all_to_all(v, sp_group, scatter_dim=1, gather_dim=2)
         
         if self.attention_mode == 'xformers': # cause loss nan while using with amp
-            x = xformers.ops.memory_efficient_attention(q, k, v).reshape(B, N, C)
+            x = xformers.ops.memory_efficient_attention(q, k, v)
 
         elif self.attention_mode == 'flash':
             # cause loss nan while using with amp
             # Optionally use the context manager to ensure one of the fused kerenels is run
             with torch.backends.cuda.sdp_kernel(enable_math=False):
-                x = torch.nn.functional.scaled_dot_product_attention(q, k, v).reshape(B, N, C) # require pytorch 2.0
+                x = torch.nn.functional.scaled_dot_product_attention(q, k, v) # require pytorch 2.0
 
         elif self.attention_mode == 'math':
             attn = (q @ k.transpose(-2, -1)) * self.scale
             attn = attn.softmax(dim=-1)
             attn = self.attn_drop(attn)
-            x = (attn @ v).transpose(1, 2).reshape(B, N, C)
+            x = (attn @ v).transpose(1, 2)
 
         else:
             raise NotImplemented
+        
+        if enable_sequence_parallel:
+            # (bs, seq_len, n_head / p, dim) -> (bs, seq_len / p, n_head, dim)
+            sp_group = get_sequence_parallel_group()
+            x = all_to_all(x, sp_group, scatter_dim=1, gather_dim=2)
+        
+        x = x.reshape(B, N, C)
 
         x = self.proj(x)
         x = self.proj_drop(x)
@@ -177,9 +198,9 @@ class TransformerBlock(nn.Module):
             nn.Linear(hidden_size, 6 * hidden_size, bias=True)
         )
 
-    def forward(self, x, c):
+    def forward(self, x, c, use_sequence_parallel=True):
         shift_msa, scale_msa, gate_msa, shift_mlp, scale_mlp, gate_mlp = self.adaLN_modulation(c).chunk(6, dim=1)
-        x = x + gate_msa.unsqueeze(1) * self.attn(modulate(self.norm1(x), shift_msa, scale_msa))
+        x = x + gate_msa.unsqueeze(1) * self.attn(modulate(self.norm1(x), shift_msa, scale_msa), use_sequence_parallel)
         x = x + gate_mlp.unsqueeze(1) * self.mlp(modulate(self.norm2(x), shift_mlp, scale_mlp))
         return x
 
@@ -324,12 +345,20 @@ class Latte(nn.Module):
         """
         if use_fp16:
             x = x.to(dtype=torch.float16)
+        
         batches, frames, channels, high, weight = x.shape 
         x = rearrange(x, 'b f c h w -> (b f) c h w')
         x = self.x_embedder(x) + self.pos_embed  
-        t = self.t_embedder(t, use_fp16=use_fp16)              
-        timestep_spatial = repeat(t, 'n d -> (n c) d', c=self.temp_embed.shape[1] + use_image_num)
-        timestep_temp = repeat(t, 'n d -> (n c) d', c=self.pos_embed.shape[1]) 
+        bs, seq_len, dim = x.shape
+        seq_parallel_world_size = get_sequence_parallel_world_size()
+        assert seq_len % seq_parallel_world_size == 0
+
+        x = split_forward_gather_backward(x, dim=1, sp_group=get_sequence_parallel_group(), grad_scale="down")
+        t = self.t_embedder(t, use_fp16=use_fp16)           
+        timestep_spatial = repeat(t, 'n d -> (n c) d', c=self.temp_embed.shape[1] + use_image_num)  # (1, num_frames, hidden_size)
+        timestep_temp = repeat(t, 'n d -> n c d', c=self.pos_embed.shape[1]) 
+        timestep_temp = split_forward_gather_backward(timestep_temp, dim=1, sp_group=get_sequence_parallel_group(), grad_scale="down")
+        timestep_temp = timestep_temp.flatten(0, 1)
 
         if self.extras == 2:
             y = self.y_embedder(y, self.training)
@@ -367,7 +396,7 @@ class Latte(nn.Module):
                 c = timestep_spatial + text_embedding_spatial
             else:
                 c = timestep_spatial
-            x  = spatial_block(x, c)
+            x  = spatial_block(x, c, use_sequence_parallel=True)
 
             x = rearrange(x, '(b f) t d -> (b t) f d', b=batches)
             x_video = x[:, :(frames-use_image_num), :]
@@ -384,7 +413,7 @@ class Latte(nn.Module):
             else:
                 c = timestep_temp
 
-            x_video = temp_block(x_video, c)
+            x_video = temp_block(x_video, c, use_sequence_parallel=False)
             x = torch.cat([x_video, x_image], dim=1)
             x = rearrange(x, '(b t) f d -> (b f) t d', b=batches)
 
@@ -392,10 +421,10 @@ class Latte(nn.Module):
             c = timestep_spatial + y_spatial
         else:
             c = timestep_spatial
-        x = self.final_layer(x, c)              
+        x = self.final_layer(x, c)    
+        x = gather_forward_split_backward(x, dim=1, sp_group=get_sequence_parallel_group(), grad_scale="up")
         x = self.unpatchify(x)                  
         x = rearrange(x, '(b f) c h w -> b f c h w', b=batches)
-        # print(x.shape)
         return x
 
 

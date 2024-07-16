@@ -37,6 +37,8 @@ from utils import (clip_grad_norm_, create_logger, update_ema,
                    write_tensorboard, setup_distributed, get_experiment_dir)
 
 
+from xtuner.parallel.sequence import init_sequence_parallel, SequenceParallelSampler
+
 #################################################################################
 #                                  Training Loop                                #
 #################################################################################
@@ -47,6 +49,7 @@ def main(args):
 
     # Setup DDP:
     setup_distributed()
+    init_sequence_parallel(args.sequence_parallel_size)
     # dist.init_process_group("nccl")
     # assert args.global_batch_size % dist.get_world_size() == 0, f"Batch size must be divisible by world size."
     # rank = dist.get_rank()
@@ -57,7 +60,8 @@ def main(args):
     local_rank = int(os.environ["LOCAL_RANK"])
     device = torch.device("cuda", local_rank)
 
-    seed = args.global_seed + rank
+    # seed = args.global_seed + rank
+    seed = args.global_seed
     torch.manual_seed(seed)
     torch.cuda.set_device(device)
     print(f"Starting rank={rank}, local rank={local_rank}, seed={seed}, world_size={dist.get_world_size()}.")
@@ -147,14 +151,16 @@ def main(args):
 
     # Setup data:
     dataset = get_dataset(args)
+
+    sampler = SequenceParallelSampler(dataset, shuffle=True, seed=args.global_seed)
         
-    sampler = DistributedSampler(
-        dataset,
-        num_replicas=dist.get_world_size(),
-        rank=rank,
-        shuffle=True,
-        seed=args.global_seed
-    )
+    # sampler = DistributedSampler(
+    #     dataset,
+    #     num_replicas=dist.get_world_size(),
+    #     rank=rank,
+    #     shuffle=True,
+    #     seed=args.global_seed
+    # )
     loader = DataLoader(
         dataset,
         batch_size=int(args.local_batch_size),
@@ -164,7 +170,7 @@ def main(args):
         pin_memory=True,
         drop_last=True
     )
-    logger.info(f"Dataset contains {len(dataset):,} videos ({args.webvideo_data_path})")
+    # logger.info(f"Dataset contains {len(dataset):,} videos ({args.webvideo_data_path})")
 
     # Scheduler
     lr_scheduler = get_scheduler(
