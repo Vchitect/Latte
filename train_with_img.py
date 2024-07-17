@@ -47,11 +47,6 @@ def main(args):
 
     # Setup DDP:
     setup_distributed()
-    # dist.init_process_group("nccl")
-    # assert args.global_batch_size % dist.get_world_size() == 0, f"Batch size must be divisible by world size."
-    # rank = dist.get_rank()
-    # device = rank % torch.cuda.device_count()
-    # local_rank = rank
 
     rank = int(os.environ["RANK"])
     local_rank = int(os.environ["LOCAL_RANK"])
@@ -302,6 +297,6 @@ def main(args):
 if __name__ == "__main__":
     # Default args here will train Latte-XL/2 with the hyperparameters we used in our paper (except training iters).
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", type=str, default="./configs/tuneavideo.yaml")
+    parser.add_argument("--config", type=str, default="./configs/sky/sky_train.yaml")
     args = parser.parse_args()
     main(OmegaConf.load(args.config))
