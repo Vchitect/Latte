@@ -297,6 +297,6 @@ def main(args):
 if __name__ == "__main__":
     # Default args here will train Latte-XL/2 with the hyperparameters we used in our paper (except training iters).
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", type=str, default="./configs/train.yaml")
+    parser.add_argument("--config", type=str, default="./configs/sky/sky_train.yaml")
     args = parser.parse_args()
     main(OmegaConf.load(args.config))
