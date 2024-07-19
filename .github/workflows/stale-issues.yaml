@@ -28,7 +28,7 @@ jobs:
 
             If you need further assistance, please feel free to respond to this comment within the next 7 days. Otherwise, the issue will be automatically closed.
 
-            We appreciate your understanding and would like to express our gratitude for your contribution to Agenda. Thank you for your support. 🙏
+            We appreciate your understanding and would like to express our gratitude for your contribution to Latte. Thank you for your support. 🙏
 
       - name: "🧹 Close stale awaiting response issues"
         uses: actions/stale@v9.0.0
@@ -47,4 +47,4 @@ jobs:
 
             If you need further assistance, please feel free to respond to this comment within the next 7 days. Otherwise, the issue will be automatically closed.
 
-            We appreciate your understanding and would like to express our gratitude for your contribution to Agenda. Thank you for your support. 🙏
+            We appreciate your understanding and would like to express our gratitude for your contribution to Latte. Thank you for your support. 🙏
