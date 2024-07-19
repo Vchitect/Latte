@@ -1,22 +1,50 @@
-name: Close inactive issues
+name: Stale Issues Policy
 on:
   schedule:
-    - cron: "30 1 * * *"
+    - cron: "0 0 * * *" # Run at 00:00 UTC every day
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write # for actions/stale to close stale issues
 
 jobs:
-  close-issues:
+  stale:
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
-      pull-requests: write
     steps:
-      - uses: actions/stale@v5
+      - name: "🧹 Mark & close stale issues"
+        uses: actions/stale@v9.0.0
         with:
-          days-before-issue-stale: 30
-          days-before-issue-close: 14
-          stale-issue-label: "stale"
-          stale-issue-message: "This issue is stale because it has been open for 30 days with no activity."
-          close-issue-message: "This issue was closed because it has been inactive for 14 days since being marked as stale."
-          days-before-pr-stale: -1
-          days-before-pr-close: -1
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+          stale-issue-label: "automatic-stale"
+          close-issue-label: "automatic-closing"
+          exempt-issue-labels: "enhancement, feature-request, upstream, hold"
+          stale-issue-message: |
+            Hi There! 👋
+
+            This issue has been marked as stale due to inactivity for 60 days.
+
+            We would like to inquire if you still have the same problem or if it has been resolved.
+
+            If you need further assistance, please feel free to respond to this comment within the next 7 days. Otherwise, the issue will be automatically closed.
+
+            We appreciate your understanding and would like to express our gratitude for your contribution to Agenda. Thank you for your support. 🙏
+
+      - name: "🧹 Close stale awaiting response issues"
+        uses: actions/stale@v9.0.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          days-before-issue-stale: 40
+          stale-issue-label: "automatic-stale"
+          close-issue-label: "automatic-closing"
+          only-labels: "awaiting response"
+          stale-issue-message: |
+            Hi There! 👋
+
+            This issue has been marked as stale due to inactivity for 40 days.
+
+            We would like to inquire if you still have the same problem or if it has been resolved.
+
+            If you need further assistance, please feel free to respond to this comment within the next 7 days. Otherwise, the issue will be automatically closed.
+
+            We appreciate your understanding and would like to express our gratitude for your contribution to Agenda. Thank you for your support. 🙏
