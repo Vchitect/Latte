@@ -16,14 +16,14 @@ jobs:
         uses: actions/stale@v9.0.0
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          days-before-issue-stale: 30
+          days-before-issue-stale: 14
           stale-issue-label: "automatic-stale"
           close-issue-label: "automatic-closing"
           exempt-issue-labels: "enhancement, feature-request, upstream, hold"
           stale-issue-message: |
             Hi There! 👋
 
-            This issue has been marked as stale due to inactivity for 30 days.
+            This issue has been marked as stale due to inactivity for 14 days.
 
             We would like to inquire if you still have the same problem or if it has been resolved.
 
@@ -35,14 +35,14 @@ jobs:
         uses: actions/stale@v9.0.0
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          days-before-issue-stale: 30
+          days-before-issue-stale: 14
           stale-issue-label: "automatic-stale"
           close-issue-label: "automatic-closing"
           only-labels: "awaiting response"
           stale-issue-message: |
             Hi There! 👋
 
-            This issue has been marked as stale due to inactivity for 30 days.
+            This issue has been marked as stale due to inactivity for 14 days.
 
             We would like to inquire if you still have the same problem or if it has been resolved.
 
