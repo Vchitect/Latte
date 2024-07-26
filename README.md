@@ -6,9 +6,10 @@
 [![Arxiv](https://img.shields.io/badge/Arxiv-b31b1b.svg)](https://arxiv.org/abs/2401.03048) 
 [![Project Page](https://img.shields.io/badge/Project-Website-blue)](https://maxin-cn.github.io/latte_project/)
 [![HF Demo](https://img.shields.io/static/v1?label=Demo&message=OpenBayes%E8%B4%9D%E5%BC%8F%E8%AE%A1%E7%AE%97&color=green)](https://openbayes.com/console/public/tutorials/UOeU0ywVxl7) 
+[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-yellow)](https://huggingface.co/spaces/Vchitect/LaVie)
 
 [![Static Badge](https://img.shields.io/badge/Latte--1%20checkpoint%20(T2V)-HuggingFace-yellow?logoColor=violet%20Latte-1%20checkpoint)](https://huggingface.co/maxin-cn/Latte-1)
-[![Static Badge](https://img.shields.io/badge/Latte%20checkpoint%20-HuggingFace-yellow?logoColor=violet%20Latte%20checkpoint)](https://huggingface.co/maxin-cn/Latte)
+[![Static Badge](https://img.shields.io/badge/Latte%20checkpoint%20-HuggingFace-yellow?logoColor=violet%20Latte%20checkpoint)](https://huggingface.co/spaces/maxin-cn/Latte-1)
 
 This repo contains PyTorch model definitions, pre-trained weights, training/sampling code and evaluation code for our paper exploring 
 latent diffusion models with transformers (Latte). You can find more visualizations on our [project page](https://maxin-cn.github.io/latte_project/).

@@ -740,7 +740,6 @@ class LattePipeline(DiffusionPipeline):
                     video = self.decode_latents(latents)
         else:
             video = latents
-            return VideoPipelineOutput(video=video)
 
         # Offload all models
         self.maybe_free_model_hooks()
