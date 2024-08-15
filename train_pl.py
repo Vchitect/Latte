@@ -1,5 +1,4 @@
 import os
-import ipdb.stdout
 import torch
 import logging
 import argparse
@@ -188,7 +187,7 @@ def main(args):
     # Trainer
     trainer = Trainer(
         accelerator="gpu",
-        devices=[3],    # Specify GPU ids
+        # devices=[3],    # Specify GPU ids
         strategy="auto",
         max_steps=args.max_train_steps,
         logger=tb_logger,

@@ -139,6 +139,8 @@ Latte models. For example, if you want to train the Latte model on the FaceForen
 torchrun --nnodes=1 --nproc_per_node=N train_with_img.py --config ./configs/ffs/ffs_img_train.yaml
 ```
 
+If you are familiar with `PyTorch Lightning`, you can also use the training script [`train_pl.py`](train_pl.py) provided by [@zhang.haojie](https://github.com/zhang-haojie).
+
 ## Contact Us
 **Yaohui Wang**: [wangyaohui@pjlab.org.cn](mailto:wangyaohui@pjlab.org.cn)
 **Xin Ma**: [xin.ma1@monash.edu](mailto:xin.ma1@monash.edu)
