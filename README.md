@@ -139,7 +139,13 @@ Latte models. For example, if you want to train the Latte model on the FaceForen
 torchrun --nnodes=1 --nproc_per_node=N train_with_img.py --config ./configs/ffs/ffs_img_train.yaml
 ```
 
-If you are familiar with `PyTorch Lightning`, you can also use the training script [`train_pl.py`](train_pl.py) provided by [@zhang.haojie](https://github.com/zhang-haojie).
+If you are familiar with `PyTorch Lightning`, you can also use the training script [`train_pl.py`](train_pl.py) provided by [@zhang.haojie](https://github.com/zhang-haojie),
+
+```bash
+python train_pl.py --config ./configs/ffs/ffs_img_train.yaml
+```
+
+This script automatically detects available GPUs and uses distributed training.
 
 ## Contact Us
 **Yaohui Wang**: [wangyaohui@pjlab.org.cn](mailto:wangyaohui@pjlab.org.cn)
