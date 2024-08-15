@@ -20,7 +20,6 @@ from einops import rearrange
 from utils import (
     update_ema,
     requires_grad,
-    text_preprocessing,
     get_experiment_dir,
     clip_grad_norm_,
     cleanup,
