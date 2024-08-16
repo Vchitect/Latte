@@ -86,7 +86,12 @@ class LatteTrainingModule(LightningModule):
             x = self.vae.encode(x).latent_dist.sample().mul_(0.18215)
             x = rearrange(x, "(b f) c h w -> b f c h w", b=b).contiguous()
 
-        model_kwargs = dict(y=video_name if self.args.extras == 2 else None)
+        if self.args.extras == 78:  # text-to-video
+            raise ValueError('T2V training is not supported at this moment!')
+        elif self.args.extras == 2:
+            model_kwargs = dict(y=video_name)
+        else:
+            model_kwargs = dict(y=None)
 
         t = torch.randint(0, self.diffusion.num_timesteps, (x.shape[0],), device=self.device)
         loss_dict = self.diffusion.training_losses(self.model, x, t, model_kwargs)
