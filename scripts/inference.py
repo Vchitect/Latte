@@ -126,8 +126,10 @@ def initialize_pipeline(
     return pipe, text_encoder
 
 
+
 def inference_function( args ):
     decord.bridge.set_bridge("torch")
+    flush()
 
     args.model = args.model if hasattr(args, 'model') else "maxin-cn/Latte-1"
     args.prompt = args.prompt if hasattr(args, 'prompt') else None
@@ -144,7 +146,6 @@ def inference_function( args ):
     # =========================================
     # ====== validate and prepare inputs ======
     # =========================================
-
 
     torch.manual_seed(args.seed)
     pipe, text_encoder = initialize_pipeline(model_id=args.model, device=args.device, load_in_4bit=args.quantize)
@@ -173,6 +174,7 @@ def inference_function( args ):
             negative_prompt_embeds=negative_prompt_embeds,
             output_type="pt",
         ).frames.cpu()
+    print(f"Max memory allocated: {bytes_to_giga_bytes(torch.cuda.max_memory_allocated())} GB")
 
 
     output_path = f"{args.output_dir}/latte_output_${(uuid.uuid4().hex)[:4]}"

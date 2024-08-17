@@ -1,10 +1,13 @@
 import os
 import sys
 from types import SimpleNamespace
-
 from huggingface_hub import snapshot_download
 import gradio as gr
 import spaces
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../scripts')))
+from inference import inference_function, video_to_base64
+
 
 
 
@@ -12,9 +15,6 @@ import spaces
 
 @spaces.GPU(duration=200)
 def run_inference(prompt_text, visual_prompt, is_running_in_api=None):
-    sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../scripts')))
-    from inference import inference_function, video_to_base64
-
     model_id = "maxin-cn/Latte-1"
 
     # negative_prompt = "watermark+++, text, shutterstock text, shutterstock++, blurry, ugly, username, url, low resolution, low quality"
@@ -52,7 +52,7 @@ def main():
                 """
                 <br/>
                 <h1 style='text-align: center'>
-                    AutoVisual: Efficient High Quality Video Production for Education.
+                    Latte: Efficient High Quality Video Production.
                 </h1>
                 <br/>
                 """
@@ -79,14 +79,13 @@ def main():
         )
         gr.Examples(
             examples=[
-                [
-                    "A cat wearing sunglasses and working as a lifeguard at pool.",
-                ],       
+                [ "A cat wearing sunglasses and working as a lifeguard at pool." ],
+                [ "A car driving fast on the Eastern beach in East London." ]       
             ],
             fn=run_inference,
             inputs=[prompt_text,],
             outputs=[output_video],
-            cache_examples=False,
+            cache_examples=True,
         )
 
 
