@@ -159,7 +159,7 @@ def main(args):
         pin_memory=True,
         drop_last=True
     )
-    logger.info(f"Dataset contains {len(dataset):,} videos ({args.webvideo_data_path})")
+    logger.info(f"Dataset contains {len(dataset):,} videos ({args.data_path})")
 
     # Scheduler
     lr_scheduler = get_scheduler(

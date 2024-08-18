@@ -80,6 +80,13 @@ class LatteTrainingModule(LightningModule):
         x = batch["video"].to(self.device)
         video_name = batch["video_name"]
 
+        if self.args.dataset == "ucf101_img":
+            image_name = batch['image_name']
+            image_names = []
+            for caption in image_name:
+                single_caption = [int(item) for item in caption.split('=====')]
+                image_names.append(torch.as_tensor(single_caption))
+
         with torch.no_grad():
             b, _, _, _, _ = x.shape
             x = rearrange(x, "b f c h w -> (b f) c h w").contiguous()
@@ -89,9 +96,12 @@ class LatteTrainingModule(LightningModule):
         if self.args.extras == 78:  # text-to-video
             raise ValueError('T2V training is not supported at this moment!')
         elif self.args.extras == 2:
-            model_kwargs = dict(y=video_name)
+            if self.args.dataset == "ucf101_img":
+                model_kwargs = dict(y=video_name, y_image=image_names, use_image_num=self.args.use_image_num)
+            else:
+                model_kwargs = dict(y=video_name)
         else:
-            model_kwargs = dict(y=None)
+            model_kwargs = dict(y=None, use_image_num=self.args.use_image_num)
 
         t = torch.randint(0, self.diffusion.num_timesteps, (x.shape[0],), device=self.device)
         loss_dict = self.diffusion.training_losses(self.model, x, t, model_kwargs)
@@ -191,7 +201,7 @@ def main(args):
     # Trainer
     trainer = Trainer(
         accelerator="gpu",
-        # devices=[3],    # Specify GPU ids
+        # devices=[0,1],    # Specify GPU ids
         strategy="auto",
         max_steps=args.max_train_steps,
         logger=tb_logger,
@@ -209,6 +219,6 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", type=str, default="./configs/ffs/ffs_train.yaml")
+    parser.add_argument("--config", type=str, default="./configs/sky/sky_img_train.yaml")
     args = parser.parse_args()
     main(OmegaConf.load(args.config))
