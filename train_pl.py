@@ -120,8 +120,11 @@ class LatteTrainingModule(LightningModule):
         checkpoint_dir = self.trainer.checkpoint_callback.dirpath
         epoch = self.trainer.current_epoch
         step = self.trainer.global_step
-        torch.save(self.model.state_dict(), f"{checkpoint_dir}/model-epoch{epoch}-step{step}.ckpt")
-        torch.save(self.ema.state_dict(), f"{checkpoint_dir}/ema-epoch{epoch}-step{step}.ckpt")
+        checkpoint = {
+            "model": self.model.module.state_dict(),
+            "ema": self.ema.state_dict(),
+        }
+        torch.save(checkpoint, f"{checkpoint_dir}/epoch{epoch}-step{step}.ckpt")
 
     def configure_optimizers(self):
         self.lr_scheduler = get_scheduler(
@@ -218,7 +221,7 @@ def main(args):
     # Trainer
     trainer = Trainer(
         accelerator="gpu",
-        # devices=[3],    # Specify GPU ids
+        devices=[3],    # Specify GPU ids
         strategy="auto",
         max_epochs=num_train_epochs,
         logger=tb_logger,
