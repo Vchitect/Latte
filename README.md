@@ -44,6 +44,7 @@ This repository contains:
 - (🔥 New) **Jul 11, 2024** 💥 **Latte-1 is now integrated into [diffusers](https://huggingface.co/docs/diffusers/main/en/api/pipelines/latte). Thanks to [@yiyixuxu](https://github.com/yiyixuxu), [@sayakpaul](https://github.com/sayakpaul), [@a-r-r-o-w](https://github.com/a-r-r-o-w) and [@DN6](https://github.com/DN6).** You can easily run Latte using the following code. We also support inference with 4/8-bit quantization, which can reduce GPU memory from 17 GB to 9 GB. Please refer to this [tutorial](docs/latte_diffusers.md) for more information.
 
 ```
+# Please update the version of diffusers at leaset to 0.30.0
 from diffusers import LattePipeline
 from diffusers.models import AutoencoderKLTemporalDecoder
 from torchvision.utils import save_image
