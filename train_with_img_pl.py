@@ -37,7 +37,7 @@ class LatteTrainingModule(LightningModule):
         requires_grad(self.ema, False)
 
         # Load pretrained model if specified
-        if args.pretrained and args.resume_from_checkpoint is not None:
+        if args.pretrained:
             # Load old checkpoint, only load EMA
             self._load_pretrained_parameters(args)
         self.logging.info(f"Model Parameters: {sum(p.numel() for p in self.model.parameters()):,}")
