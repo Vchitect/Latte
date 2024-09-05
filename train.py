@@ -88,9 +88,7 @@ def main(args):
     sample_size = args.image_size // 8
     args.latent_size = sample_size
     model = get_models(args)
-    # Note that parameter initialization is done within the Latte constructor
-    ema = deepcopy(model).to(device)  # Create an EMA of the model for use after training
-    requires_grad(ema, False)
+    
     diffusion = create_diffusion(timestep_respacing="")  # default: 1000 steps, linear noise schedule
     # vae = AutoencoderKL.from_pretrained(f"stabilityai/sd-vae-ft-ema").to(device)
     vae = AutoencoderKL.from_pretrained(args.pretrained_model_path, subfolder="vae").to(device)
@@ -119,6 +117,10 @@ def main(args):
     if args.use_compile:
         model = torch.compile(model)
 
+    # Note that parameter initialization is done within the Latte constructor
+    ema = deepcopy(model).to(device)  # Create an EMA of the model for use after training
+    requires_grad(ema, False)
+  
     # set distributed training
     model = DDP(model.to(device), device_ids=[local_rank])
 
