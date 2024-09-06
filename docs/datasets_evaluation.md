@@ -45,7 +45,7 @@ qEnKi82wWgE_2_rJPM8EdWShs_1/000071.jpg
 
 ## Evaluation
 
-We follow [StyleGAN-V](https://github.com/universome/stylegan-v) to measure the quality of the generated video. The code for calculating the relevant metrics is located in [tools](../tools/) folder. To measure the quantitative metrics of your generated results, you need to put all the videos from real data into a folder and turn them into video frames (the same goes for fake data). Then you can run the following command on one GPU:
+We follow [StyleGAN-V](https://github.com/universome/stylegan-v) to measure the quality of the generated video. The code for calculating the relevant metrics is located in [tools](../tools/) folder. To measure the quantitative metrics of your generated results, you need to put all the videos from real data into a folder, turn them into video frames and do `center-crop-resize-256` (the same goes for fake data). Then you can run the following command on one GPU:
 
 ```bash
 # cd Latte
