@@ -19,7 +19,8 @@ jobs:
           days-before-issue-stale: 14
           stale-issue-label: "automatic-stale"
           close-issue-label: "automatic-closing"
-          exempt-issue-labels: "enhancement, feature-request, upstream, hold"
+          # exempt-issue-labels: "enhancement, feature-request, upstream, hold"
+          exempt-issue-labels: "feature-request, upstream, hold"
           stale-issue-message: |
             Hi There! 👋
 
