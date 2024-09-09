@@ -219,7 +219,7 @@ def main(args):
 
             t = torch.randint(0, diffusion.num_timesteps, (x.shape[0],), device=device)
             loss_dict = diffusion.training_losses(model, x, t, model_kwargs)
-            loss = loss_dict["loss"].mean()
+            loss = loss_dict["loss"].mean() / args.gradient_accumulation_steps
             loss.backward()
 
             if train_steps < args.start_clip_iter: # if train_steps >= start_clip_iter, will clip gradient
@@ -227,10 +227,12 @@ def main(args):
             else:
                 gradient_norm = clip_grad_norm_(model.module.parameters(), args.clip_max_norm, clip_grad=True)
 
-            opt.step()
+            
             lr_scheduler.step()
-            opt.zero_grad()
-            update_ema(ema, model.module)
+            if train_steps % args.gradient_accumulation_steps == 0 and train_steps > 0:
+                opt.step()
+                opt.zero_grad()
+                update_ema(ema, model.module)
 
             # Log loss values:
             running_loss += loss.item()
