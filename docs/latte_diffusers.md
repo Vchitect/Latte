@@ -55,7 +55,7 @@ def bytes_to_giga_bytes(bytes):
     return bytes / 1024 / 1024 / 1024
 
 video_length = 16
-model_id = "maxin-cn/Latte-1/"
+model_id = "maxin-cn/Latte-1"
 
 text_encoder = T5EncoderModel.from_pretrained(
     model_id,
