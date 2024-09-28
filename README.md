@@ -65,6 +65,8 @@ prompt = "a cat wearing sunglasses and working as a lifeguard at pool."
 videos = pipe(prompt, video_length=video_length, output_type='pt').frames.cpu()
 ```
 
+- (🔥 New) **Jun 26, 2024** 💥 Latte is supported by [VideoSys](https://github.com/NUS-HPC-AI-Lab/VideoSys), which is a user-friendly, high-performance infrastructure for video generation.
+
 - (🔥 New) **May 23, 2024** 💥 **Latte-1** is released! Pre-trained model can be downloaded [here](https://huggingface.co/maxin-cn/Latte-1/tree/main/transformer). **We support both T2V and T2I**. Please run `bash sample/t2v.sh` and `bash sample/t2i.sh` respectively.
 
 <!--
