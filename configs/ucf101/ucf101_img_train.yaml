@@ -3,7 +3,7 @@ dataset: "ucf101_img"
 
 data_path: "/path/to/datasets/UCF101/videos/"
 frame_data_txt: "/path/to/datasets/UCF101/train_256_list.txt"
-pretrained_model_path: "/path/to/pretrained/Latte/"
+pretrained_model_path: "/path/to/pretrained/Latte/" # Please download pre-trained models from https://huggingface.co/maxin-cn/Latte/tree/main
 
 # save and load
 results_dir: "./results_img"
