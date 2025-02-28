@@ -12,7 +12,7 @@
 [![Static Badge](https://img.shields.io/badge/Latte--1%20checkpoint%20(T2V)-HuggingFace-yellow?logoColor=violet%20Latte-1%20checkpoint)](https://huggingface.co/maxin-cn/Latte-1)
 [![Static Badge](https://img.shields.io/badge/Latte%20checkpoint%20-HuggingFace-yellow?logoColor=violet%20Latte%20checkpoint)](https://huggingface.co/spaces/maxin-cn/Latte-1)
 
-This repo contains PyTorch model definitions, pre-trained weights, training/sampling code and evaluation code for our paper 
+This repo contains the PyTorch model definitions, pre-trained weights, and training/sampling/evaluation codes for our paper 
 Latte: Latent Diffusion Transformer for Video Generation. 
 
 > [**Latte: Latent Diffusion Transformer for Video Generation**](https://maxin-cn.github.io/latte_project/)<br>
