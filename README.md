@@ -165,11 +165,11 @@ This script automatically detects available GPUs and uses distributed training.
 ## Citation
 If you find this work useful for your research, please consider citing it.
 ```bibtex
-@article{ma2024latte,
+@article{ma2025latte,
   title={Latte: Latent Diffusion Transformer for Video Generation},
-  author={Ma, Xin and Wang, Yaohui and Jia, Gengyun and Chen, Xinyuan and Liu, Ziwei and Li, Yuan-Fang and Chen, Cunjian and Qiao, Yu},
-  journal={arXiv preprint arXiv:2401.03048},
-  year={2024}
+  author={Ma, Xin and Wang, Yaohui and Chen, Xinyuan and Jia, Gengyun and Liu, Ziwei and Li, Yuan-Fang and Chen, Cunjian and Qiao, Yu},
+  journal={Transactions on Machine Learning Research},
+  year={2025}
 }
 ```
 
