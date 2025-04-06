@@ -14,7 +14,10 @@ dependencies:
     - tensorboard
     - einops
     - transformers
+    - bitsandbytes
+    - wandb
     - av
+    - opencv-python
     - scikit-image
     - decord
     - pandas
@@ -23,3 +26,6 @@ dependencies:
     - beautifulsoup4
     - ftfy
     - omegaconf
+    - gradio
+    - spaces
+    - uuid

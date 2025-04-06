@@ -3,7 +3,7 @@ preprocess
 results
 results_img
 sample_videos
-
+outputs
 
 __pycache__/
 *.py[cod]
