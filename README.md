@@ -41,9 +41,9 @@ This repository contains:
 <video controls loop src="https://github.com/Vchitect/Latte/assets/7929326/a650cd84-2378-4303-822b-56a441e1733b" type="video/mp4"></video>
 
 ## News
-- (🔥 New) **Mar 23, 2025** 💥 Latte is accepted by Transactions on Machine Learning Research (TMLR) 2025.
+- 🔥 **Mar 23, 2025** 💥 Latte is accepted by Transactions on Machine Learning Research (TMLR) 2025.
 
-- (🔥 New) **Jul 11, 2024** 💥 **Latte-1 is now integrated into [diffusers](https://huggingface.co/docs/diffusers/main/en/api/pipelines/latte). Thanks to [@yiyixuxu](https://github.com/yiyixuxu), [@sayakpaul](https://github.com/sayakpaul), [@a-r-r-o-w](https://github.com/a-r-r-o-w) and [@DN6](https://github.com/DN6).** You can easily run Latte using the following code. We also support inference with 4/8-bit quantization, which can reduce GPU memory from 17 GB to 9 GB. Please refer to this [tutorial](docs/latte_diffusers.md) for more information.
+- 🔥 **Jul 11, 2024** 💥 **Latte-1 is now integrated into [diffusers](https://huggingface.co/docs/diffusers/main/en/api/pipelines/latte). Thanks to [@yiyixuxu](https://github.com/yiyixuxu), [@sayakpaul](https://github.com/sayakpaul), [@a-r-r-o-w](https://github.com/a-r-r-o-w) and [@DN6](https://github.com/DN6).** You can easily run Latte using the following code. We also support inference with 4/8-bit quantization, which can reduce GPU memory from 17 GB to 9 GB. Please refer to this [tutorial](docs/latte_diffusers.md) for more information.
 
 ```
 # Please update the version of diffusers at leaset to 0.30.0
@@ -67,9 +67,9 @@ prompt = "a cat wearing sunglasses and working as a lifeguard at pool."
 videos = pipe(prompt, video_length=video_length, output_type='pt').frames.cpu()
 ```
 
-- (🔥 New) **Jun 26, 2024** 💥 Latte is supported by [VideoSys](https://github.com/NUS-HPC-AI-Lab/VideoSys), which is a user-friendly, high-performance infrastructure for video generation.
+- 🔥 **Jun 26, 2024** 💥 Latte is supported by [VideoSys](https://github.com/NUS-HPC-AI-Lab/VideoSys), which is a user-friendly, high-performance infrastructure for video generation.
 
-- (🔥 New) **May 23, 2024** 💥 **Latte-1** is released! Pre-trained model can be downloaded [here](https://huggingface.co/maxin-cn/Latte-1/tree/main/transformer). **We support both T2V and T2I**. Please run `bash sample/t2v.sh` and `bash sample/t2i.sh` respectively.
+- 🔥 **May 23, 2024** 💥 **Latte-1** is released! Pre-trained model can be downloaded [here](https://huggingface.co/maxin-cn/Latte-1/tree/main/transformer). **We support both T2V and T2I**. Please run `bash sample/t2v.sh` and `bash sample/t2i.sh` respectively.
 
 <!--
 <div align="center">
@@ -77,12 +77,12 @@ videos = pipe(prompt, video_length=video_length, output_type='pt').frames.cpu()
 </div>
 -->
 
-- (🔥 New) **Feb 24, 2024** 💥 We are very grateful that researchers and developers like our work. We will continue to update our LatteT2V model, hoping that our efforts can help the community develop. Our Latte discord channel <a href="https://discord.gg/RguYqhVU92" style="text-decoration:none;">
+- 🔥 **Feb 24, 2024** 💥 We are very grateful that researchers and developers like our work. We will continue to update our LatteT2V model, hoping that our efforts can help the community develop. Our Latte discord channel <a href="https://discord.gg/RguYqhVU92" style="text-decoration:none;">
 <img src="https://user-images.githubusercontent.com/25839884/218347213-c080267f-cbb6-443e-8532-8e1ed9a58ea9.png" width="3%" alt="" /></a> is created for discussions. Coders are welcome to contribute.
 
-- (🔥 New) **Jan 9, 2024** 💥 An updated LatteT2V model initialized with the [PixArt-α](https://github.com/PixArt-alpha/PixArt-alpha) is released, the checkpoint can be found [here](https://huggingface.co/maxin-cn/Latte-0/tree/main/transformer).
+- 🔥 **Jan 9, 2024** 💥 An updated LatteT2V model initialized with the [PixArt-α](https://github.com/PixArt-alpha/PixArt-alpha) is released, the checkpoint can be found [here](https://huggingface.co/maxin-cn/Latte-0/tree/main/transformer).
 
-- (🔥 New) **Oct 31, 2023** 💥 The training and inference code is released. All checkpoints (including FaceForensics, SkyTimelapse, UCF101, and Taichi-HD) can be found [here](https://huggingface.co/maxin-cn/Latte/tree/main). In addition, the LatteT2V inference code is provided.
+- 🔥 **Oct 31, 2023** 💥 The training and inference code is released. All checkpoints (including FaceForensics, SkyTimelapse, UCF101, and Taichi-HD) can be found [here](https://huggingface.co/maxin-cn/Latte/tree/main). In addition, the LatteT2V inference code is provided.
 
 
 ## Setup
