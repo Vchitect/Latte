@@ -37,13 +37,22 @@ class GatedSelfAttentionDense(nn.Module):
         d_head (`int`): The number of channels in each head.
     """
 
-    def __init__(self, query_dim: int, context_dim: int, n_heads: int, d_head: int):
+    def __init__(self, query_dim: int, context_dim: int, n_heads: int, d_head: int, attn_type: str = 'vanilla'):
         super().__init__()
 
         # we need a linear projection since we need cat visual feature and obj feature
         self.linear = nn.Linear(context_dim, query_dim)
 
-        self.attn = Attention(query_dim=query_dim, heads=n_heads, dim_head=d_head)
+        if attn_type == 'rebased':
+            from models.utils import RebasedAttnProcessor
+            attn_proc = RebasedAttnProcessor()
+        elif attn_type == 'ring':
+            from models.utils import RingAttnProcessor
+            attn_proc = RingAttnProcessor()
+        else:
+            attn_proc = None
+
+        self.attn = Attention(query_dim=query_dim, heads=n_heads, dim_head=d_head, processor=attn_proc)
         self.ff = FeedForward(query_dim, activation_fn="geglu")
 
         self.norm1 = nn.LayerNorm(query_dim)
@@ -178,6 +187,7 @@ class BasicTransformerBlock_(nn.Module):
         attention_type: str = "default",
         positional_embeddings: Optional[str] = None,
         num_positional_embeddings: Optional[int] = None,
+        attn_type: str = "vanilla"
     ):
         super().__init__()
         self.only_cross_attention = only_cross_attention
@@ -212,6 +222,15 @@ class BasicTransformerBlock_(nn.Module):
         else:
             self.norm1 = nn.LayerNorm(dim, elementwise_affine=norm_elementwise_affine, eps=norm_eps) # go here
 
+        if attn_type == 'rebased':
+            from models.utils import RebasedAttnProcessor
+            attn_proc = RebasedAttnProcessor()
+        elif attn_type == 'ring':
+            from models.utils import RingAttnProcessor
+            attn_proc = RingAttnProcessor()
+        else:
+            attn_proc = None
+
         self.attn1 = Attention(
             query_dim=dim,
             heads=num_attention_heads,
@@ -220,6 +239,7 @@ class BasicTransformerBlock_(nn.Module):
             bias=attention_bias,
             cross_attention_dim=cross_attention_dim if only_cross_attention else None,
             upcast_attention=upcast_attention,
+            processor=attn_proc
         )
 
         # # 2. Cross-Attn
@@ -254,7 +274,7 @@ class BasicTransformerBlock_(nn.Module):
 
         # 4. Fuser
         if attention_type == "gated" or attention_type == "gated-text-image":
-            self.fuser = GatedSelfAttentionDense(dim, cross_attention_dim, num_attention_heads, attention_head_dim)
+            self.fuser = GatedSelfAttentionDense(dim, cross_attention_dim, num_attention_heads, attention_head_dim,attn_type=attn_type)
 
         # 5. Scale-shift for PixArt-Alpha.
         if self.use_ada_layer_norm_single:
@@ -498,6 +518,7 @@ class LatteT2V(ModelMixin, ConfigMixin):
         attention_type: str = "default",
         caption_channels: int = None,
         video_length: int = 16,
+        attn_type: str = "vanilla"
     ):
         super().__init__()
         self.use_linear_projection = use_linear_projection
@@ -600,6 +621,7 @@ class LatteT2V(ModelMixin, ConfigMixin):
                     norm_elementwise_affine=norm_elementwise_affine,
                     norm_eps=norm_eps,
                     attention_type=attention_type,
+                    attn_type=attn_type
                 )
                 for d in range(num_layers)
             ]
@@ -624,6 +646,7 @@ class LatteT2V(ModelMixin, ConfigMixin):
                     norm_elementwise_affine=norm_elementwise_affine,
                     norm_eps=norm_eps,
                     attention_type=attention_type,
+                    attn_type=attn_type
                 )
                 for d in range(num_layers)
             ]
