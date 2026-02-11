@@ -70,7 +70,7 @@ class Attention(nn.Module):
             x = (attn @ v).transpose(1, 2).reshape(B, N, C)
 
         else:
-            raise NotImplemented
+            raise NotImplementedError
 
         x = self.proj(x)
         x = self.proj_drop(x)
@@ -369,6 +369,8 @@ class Latte(nn.Module):
 
         if self.extras == 2:
             c = timestep_spatial + y_spatial
+        elif self.extras == 78:
+            c = timestep_spatial + text_embedding_spatial
         else:
             c = timestep_spatial
         x = self.final_layer(x, c)               
