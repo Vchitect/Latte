@@ -57,7 +57,7 @@ class Taichi(data.Dataset):
             root = meta[0]
             try:
                 frames = sorted(meta[2], key=lambda item: int(item.split('.')[0].split('_')[-1]))
-            except:
+            except ValueError:
                 print(meta[0], meta[2])
             frames = [os.path.join(root, item) for item in frames if is_image_file(item)]
             # if len(frames) > max(0, self.sequence_length * self.sample_every_n_frames):

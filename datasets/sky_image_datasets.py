@@ -78,7 +78,7 @@ class SkyImages(data.Dataset):
             root = meta[0]
             try:
                 frames = sorted(meta[2], key=lambda item: int(item.split('.')[0].split('_')[-1]))
-            except:
+            except ValueError:
                 print(meta[0]) # root
                 print(meta[2]) # files
             frames = [os.path.join(root, item) for item in frames if is_image_file(item)]
